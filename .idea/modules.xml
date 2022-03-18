@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/RI.iml" filepath="$PROJECT_DIR$/.idea/RI.iml" />
+      <module fileurl="file://$PROJECT_DIR$/p1/mri-indexer.iml" filepath="$PROJECT_DIR$/p1/mri-indexer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Ejercicios/testlucene8_1_1.iml" filepath="$PROJECT_DIR$/Ejercicios/testlucene8_1_1.iml" />
     </modules>
   </component>
 </project>
