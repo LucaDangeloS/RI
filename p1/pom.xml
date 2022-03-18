@@ -18,7 +18,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.11</version>
+      <version>4.13.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -59,9 +59,10 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
-        <version>3.3.0</version>
         <executions>
+
           <execution>
+            <id>IndexFiles</id>
             <phase>package</phase>
             <goals>
               <goal>single</goal>
@@ -75,8 +76,29 @@
                   <mainClass>udc.rigrado.IndexFiles</mainClass>
                 </manifest>
               </archive>
+              <finalName>IndexFiles-${project.version}</finalName>
             </configuration>
           </execution>
+
+<!--          <execution>-->
+<!--            <id>SearchFiles</id>-->
+<!--            <phase>package</phase>-->
+<!--            <goals>-->
+<!--              <goal>single</goal>-->
+<!--            </goals>-->
+<!--            <configuration>-->
+<!--              <descriptorRefs>-->
+<!--                <descriptorRef>jar-with-dependencies</descriptorRef>-->
+<!--              </descriptorRefs>-->
+<!--              <archive>-->
+<!--                <manifest>-->
+<!--                  <mainClass>udc.rigrado.SearchFiles</mainClass>-->
+<!--                </manifest>-->
+<!--              </archive>-->
+<!--              <finalName>SearchFiles-${project.version}</finalName>-->
+<!--            </configuration>-->
+<!--          </execution>-->
+
         </executions>
       </plugin>
 
@@ -130,10 +152,10 @@
           <version>3.7.1</version>
         </plugin>
 
-        <plugin>
-          <artifactId>maven-project-info-reports-plugin</artifactId>
-          <version>3.0.0</version>
-        </plugin>
+<!--        <plugin>-->
+<!--          <artifactId>maven-project-info-reports-plugin</artifactId>-->
+<!--          <version>3.0.0</version>-->
+<!--        </plugin>-->
 
     </plugins>
   </build>
