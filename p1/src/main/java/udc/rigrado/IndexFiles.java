@@ -18,7 +18,6 @@ package udc.rigrado;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.function.BiConsumer;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -162,20 +161,64 @@ public class IndexFiles implements AutoCloseable {
         }
     }
 
+    /**
+     * Indexes the given file using the given writer, or if a directory is given,
+     * recurses over files and directories found under the given directory.
+     *
+     * <p>
+     * NOTE: This method indexes one document per input file. This is slow. For good
+     * throughput, put multiple documents into your input file(s). An example of
+     * this is in the benchmark module, which can create "line doc" files, one
+     * document per line, using the <a href=
+     * "../../../../../contrib-benchmark/org/apache/lucene/benchmark/byTask/tasks/WriteLineDocTask.html"
+     * >WriteLineDocTask</a>.
+     *
+    * @param writer Writer to the index where the given file/dir info will be
+     *               stored
+    * @param docDir   The file to index, or the directory to recurse into to find
+     *               files to indt
+    * @throws IOException If there is a low-level I/O error
+     */
+    void indexDocs(IndexWriter writer, Path docDir) throws IOException {
+        final Runnable worker = new ThreadedIndex(writer, docDir, this.executor);
+        executor.execute(worker);
+
+
+        /* Wait up to 1 minute to finish all the previously submitted jobs */
+
+        try {
+            executor.awaitTermination(20, TimeUnit.SECONDS);
+            executor.shutdownNow(); //garantee shutdown
+        } catch (final InterruptedException e) {
+            e.printStackTrace();
+            System.exit(-2);
+        }
+        System.out.println("Finished all threads");
+    }
+
     public static class ThreadedIndex implements Runnable {
 
-        private final Path folder;
+        private final Path path;
         private final IndexWriter writer;
-        private final BiConsumer dirCallback;
+        private final ExecutorService executor;
+        private static volatile int threadCount = 1;
 
-        public ThreadedIndex(IndexWriter writer, final Path folder, BiConsumer<IndexWriter, Path> callback) {
+        public ThreadedIndex(IndexWriter writer, final Path folder, ExecutorService executor) {
             this.writer = writer;
-            this.folder = folder;
-            this.dirCallback = callback;
+            this.path = folder;
+            this.executor = executor;
+        }
+
+        synchronized private void incrementThreadCount(){
+            threadCount++;
+        }
+
+        synchronized private void decrementThreadCount(){
+            threadCount--;
         }
 
         /** Indexes a single document */
-        static void indexDoc(IndexWriter writer, Path file, long lastModified) throws IOException {
+        void indexDoc(IndexWriter writer, Path file, long lastModified) throws IOException {
             try (InputStream stream = Files.newInputStream(file)) {
                 // make a new, empty document
                 Document doc = new Document();
@@ -224,103 +267,27 @@ public class IndexFiles implements AutoCloseable {
         @Override
         public void run() {
             try {
-                Files.walkFileTree(folder, new SimpleFileVisitor<>() {
-                    @Override
-                    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
-                        try {
-                            indexDoc(writer, file, attrs.lastModifiedTime().toMillis());
-                        } catch (@SuppressWarnings("unused") IOException ignore) {
-                            ignore.printStackTrace(System.err);
-                            // don't index files that can't be read.
-                        }
-                        return FileVisitResult.CONTINUE;
-                    }
+                DirectoryStream<Path> directoryStream = Files.newDirectoryStream(path);
 
-                    @Override
-                    public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-                        dirCallback.accept(writer, dir);
-                        return FileVisitResult.SKIP_SUBTREE;
+                for (final Path subpath : directoryStream) {
+                    if (Files.isDirectory(subpath)) {
+                        final Runnable worker = new ThreadedIndex(this.writer, subpath, this.executor);
+                        incrementThreadCount();
+                        this.executor.execute(worker);
+                    } else {
+                        indexDoc(writer, subpath, Files.getLastModifiedTime(subpath).toMillis());
                     }
-                });
+                }
+                decrementThreadCount();
+
+                if (threadCount == 0) {
+                    executor.shutdown();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-
     }
-
-
-
-    /**
-     * Indexes the given file using the given writer, or if a directory is given,
-     * recurses over files and directories found under the given directory.
-     *
-     * <p>
-     * NOTE: This method indexes one document per input file. This is slow. For good
-     * throughput, put multiple documents into your input file(s). An example of
-     * this is in the benchmark module, which can create "line doc" files, one
-     * document per line, using the <a href=
-     * "../../../../../contrib-benchmark/org/apache/lucene/benchmark/byTask/tasks/WriteLineDocTask.html"
-     * >WriteLineDocTask</a>.
-     *
-     * @param writer Writer to the index where the given file/dir info will be
-     *               stored
-     * @param path   The file to index, or the directory to recurse into to find
-     *               files to indt
-     * @throws IOException If there is a low-level I/O error
-     */
-    void indexDocs(final IndexWriter writer, Path path) {
-        try {
-            DirectoryStream<Path> directoryStream = Files.newDirectoryStream(path);
-
-            for (final Path subpath : directoryStream) {
-                if (Files.isDirectory(subpath)) {
-                    final Runnable worker = new ThreadedIndex(writer, subpath, this::indexDocs);
-                    /*
-                     * Send the thread to the ThreadPool. It will be processed eventually.
-                     */
-                    executor.execute(worker);
-                } else {
-                    ThreadedIndex.indexDoc(writer, subpath, Files.getLastModifiedTime(subpath).toMillis());
-                }
-            }
-
-            executor.shutdown();
-
-            try {
-                System.out.println(executor.awaitTermination(1, TimeUnit.HOURS));
-            } catch (final InterruptedException e) {
-                e.printStackTrace();
-                System.exit(-2);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-//    void indexDoc(IndexWriter writer, Path file, long lastModified) throws IOException {
-//        try (InputStream stream = Files.newInputStream(file)) {
-//            Document doc = new Document();
-//
-//            Field pathField = new StringField("path", file.toString(), Field.Store.YES);
-//            doc.add(pathField);
-//
-//            doc.add(new LongPoint("modified", lastModified));
-//
-//            doc.add(new TextField("contents",
-//                    new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))));
-//
-//            if (writer.getConfig().getOpenMode() == OpenMode.CREATE) {
-//
-//                System.out.println("adding " + file);
-//                writer.addDocument(doc);
-//            } else {
-//
-//                System.out.println("updating " + file);
-//                writer.updateDocument(new Term("path", file.toString()), doc);
-//            }
-//        }
-//    }
 
     @Override
     public void close() throws IOException {
