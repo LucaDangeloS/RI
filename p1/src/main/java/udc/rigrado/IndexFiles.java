@@ -18,16 +18,16 @@ package udc.rigrado;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.function.BiConsumer;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
+import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Date;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -57,9 +57,11 @@ import org.apache.lucene.util.IOUtils;
 public class IndexFiles implements AutoCloseable {
 
     private final KnnVectorDict vectorDict;
+    private final ExecutorService executor;
 
-    private IndexFiles(KnnVectorDict vectorDict) throws IOException {
+    private IndexFiles(KnnVectorDict vectorDict, int numCores) throws IOException {
         this.vectorDict = vectorDict;
+        this.executor = Executors.newFixedThreadPool(numCores);
     }
 
     /** Index all text files under a directory. */
@@ -71,6 +73,7 @@ public class IndexFiles implements AutoCloseable {
                 + "IF DICT_PATH contains a KnnVector dictionary, the index will also support KnnVector search";
         String indexPath = "index";
         String docsPath = null;
+        int threads = Runtime.getRuntime().availableProcessors();
         boolean create = true;
         for (int i = 0; i < args.length; i++) {
             switch (args[i]) {
@@ -85,6 +88,9 @@ public class IndexFiles implements AutoCloseable {
                     break;
                 case "-create":
                     create = true;
+                    break;
+                case "-numThreads":
+                    threads = Integer.parseInt(args[++i]);
                     break;
                 default:
                     throw new IllegalArgumentException("unknown parameter " + args[i]);
@@ -128,7 +134,7 @@ public class IndexFiles implements AutoCloseable {
             // iwc.setRAMBufferSizeMB(256.0);
 
             try (IndexWriter writer = new IndexWriter(dir, iwc);
-                 IndexFiles indexFiles = new IndexFiles(null)) {
+                 IndexFiles indexFiles = new IndexFiles(null, threads)) {
                 indexFiles.indexDocs(writer, docDir);
 
                 // NOTE: if you want to maximize search performance,
@@ -156,6 +162,95 @@ public class IndexFiles implements AutoCloseable {
         }
     }
 
+    public static class ThreadedIndex implements Runnable {
+
+        private final Path folder;
+        private final IndexWriter writer;
+        private final BiConsumer dirCallback;
+
+        public ThreadedIndex(IndexWriter writer, final Path folder, BiConsumer<IndexWriter, Path> callback) {
+            this.writer = writer;
+            this.folder = folder;
+            this.dirCallback = callback;
+        }
+
+        /** Indexes a single document */
+        static void indexDoc(IndexWriter writer, Path file, long lastModified) throws IOException {
+            try (InputStream stream = Files.newInputStream(file)) {
+                // make a new, empty document
+                Document doc = new Document();
+
+                // Add the path of the file as a field named "path". Use a
+                // field that is indexed (i.e. searchable), but don't tokenize
+                // the field into separate words and don't index term frequency
+                // or positional information:
+                Field pathField = new StringField("path", file.toString(), Field.Store.YES);
+                doc.add(pathField);
+
+                // Add the last modified date of the file a field named "modified".
+                // Use a LongPoint that is indexed (i.e. efficiently filterable with
+                // PointRangeQuery). This indexes to milli-second resolution, which
+                // is often too fine. You could instead create a number based on
+                // year/month/day/hour/minutes/seconds, down the resolution you require.
+                // For example the long value 2011021714 would mean
+                // February 17, 2011, 2-3 PM.
+                doc.add(new LongPoint("modified", lastModified));
+
+                // Add the contents of the file to a field named "contents". Specify a Reader,
+                // so that the text of the file is tokenized and indexed, but not stored.
+                // Note that FileReader expects the file to be in UTF-8 encoding.
+                // If that's not the case searching for special characters will fail.
+                doc.add(new TextField("contents",
+                        new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))));
+
+                if (writer.getConfig().getOpenMode() == OpenMode.CREATE) {
+                    // New index, so we just add the document (no old document can be there):
+                    System.out.println(Thread.currentThread().getName() + " adding " + file);
+                    writer.addDocument(doc);
+                } else {
+                    // Existing index (an old copy of this document may have been indexed) so
+                    // we use updateDocument instead to replace the old one matching the exact
+                    // path, if present:
+                    System.out.println("updating " + file);
+                    writer.updateDocument(new Term("path", file.toString()), doc);
+                }
+            }
+        }
+
+        /**
+         * This is the work that the current thread will do when processed by the pool.
+         * In this case, it will only print some information.
+         */
+        @Override
+        public void run() {
+            try {
+                Files.walkFileTree(folder, new SimpleFileVisitor<>() {
+                    @Override
+                    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+                        try {
+                            indexDoc(writer, file, attrs.lastModifiedTime().toMillis());
+                        } catch (@SuppressWarnings("unused") IOException ignore) {
+                            ignore.printStackTrace(System.err);
+                            // don't index files that can't be read.
+                        }
+                        return FileVisitResult.CONTINUE;
+                    }
+
+                    @Override
+                    public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                        dirCallback.accept(writer, dir);
+                        return FileVisitResult.SKIP_SUBTREE;
+                    }
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+
+
     /**
      * Indexes the given file using the given writer, or if a directory is given,
      * recurses over files and directories found under the given directory.
@@ -174,70 +269,63 @@ public class IndexFiles implements AutoCloseable {
      *               files to indt
      * @throws IOException If there is a low-level I/O error
      */
-    void indexDocs(final IndexWriter writer, Path path) throws IOException {
-        if (Files.isDirectory(path)) {
-            Files.walkFileTree(path, new SimpleFileVisitor<>() {
-                @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
-                    try {
-                        indexDoc(writer, file, attrs.lastModifiedTime().toMillis());
-                    } catch (@SuppressWarnings("unused") IOException ignore) {
-                        ignore.printStackTrace(System.err);
-                        // don't index files that can't be read.
-                    }
-                    return FileVisitResult.CONTINUE;
+    void indexDocs(final IndexWriter writer, Path path) {
+        try {
+            DirectoryStream<Path> directoryStream = Files.newDirectoryStream(path);
+
+            for (final Path subpath : directoryStream) {
+                if (Files.isDirectory(subpath)) {
+                    final Runnable worker = new ThreadedIndex(writer, subpath, this::indexDocs);
+                    /*
+                     * Send the thread to the ThreadPool. It will be processed eventually.
+                     */
+                    executor.execute(worker);
+                } else {
+                    ThreadedIndex.indexDoc(writer, subpath, Files.getLastModifiedTime(subpath).toMillis());
                 }
-            });
-        } else {
-            indexDoc(writer, path, Files.getLastModifiedTime(path).toMillis());
-        }
-    }
-
-    /** Indexes a single document */
-    void indexDoc(IndexWriter writer, Path file, long lastModified) throws IOException {
-        try (InputStream stream = Files.newInputStream(file)) {
-            // make a new, empty document
-            Document doc = new Document();
-
-            // Add the path of the file as a field named "path". Use a
-            // field that is indexed (i.e. searchable), but don't tokenize
-            // the field into separate words and don't index term frequency
-            // or positional information:
-            Field pathField = new StringField("path", file.toString(), Field.Store.YES);
-            doc.add(pathField);
-
-            // Add the last modified date of the file a field named "modified".
-            // Use a LongPoint that is indexed (i.e. efficiently filterable with
-            // PointRangeQuery). This indexes to milli-second resolution, which
-            // is often too fine. You could instead create a number based on
-            // year/month/day/hour/minutes/seconds, down the resolution you require.
-            // For example the long value 2011021714 would mean
-            // February 17, 2011, 2-3 PM.
-            doc.add(new LongPoint("modified", lastModified));
-
-            // Add the contents of the file to a field named "contents". Specify a Reader,
-            // so that the text of the file is tokenized and indexed, but not stored.
-            // Note that FileReader expects the file to be in UTF-8 encoding.
-            // If that's not the case searching for special characters will fail.
-            doc.add(new TextField("contents",
-                    new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))));
-
-            if (writer.getConfig().getOpenMode() == OpenMode.CREATE) {
-                // New index, so we just add the document (no old document can be there):
-                System.out.println("adding " + file);
-                writer.addDocument(doc);
-            } else {
-                // Existing index (an old copy of this document may have been indexed) so
-                // we use updateDocument instead to replace the old one matching the exact
-                // path, if present:
-                System.out.println("updating " + file);
-                writer.updateDocument(new Term("path", file.toString()), doc);
             }
+
+            executor.shutdown();
+
+            try {
+                System.out.println(executor.awaitTermination(1, TimeUnit.HOURS));
+            } catch (final InterruptedException e) {
+                e.printStackTrace();
+                System.exit(-2);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
+
+//    void indexDoc(IndexWriter writer, Path file, long lastModified) throws IOException {
+//        try (InputStream stream = Files.newInputStream(file)) {
+//            Document doc = new Document();
+//
+//            Field pathField = new StringField("path", file.toString(), Field.Store.YES);
+//            doc.add(pathField);
+//
+//            doc.add(new LongPoint("modified", lastModified));
+//
+//            doc.add(new TextField("contents",
+//                    new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))));
+//
+//            if (writer.getConfig().getOpenMode() == OpenMode.CREATE) {
+//
+//                System.out.println("adding " + file);
+//                writer.addDocument(doc);
+//            } else {
+//
+//                System.out.println("updating " + file);
+//                writer.updateDocument(new Term("path", file.toString()), doc);
+//            }
+//        }
+//    }
 
     @Override
     public void close() throws IOException {
         IOUtils.close(vectorDict);
     }
 }
+
+
