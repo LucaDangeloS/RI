@@ -51,10 +51,12 @@ public class IndexFiles implements AutoCloseable {
 
     private final KnnVectorDict vectorDict;
     private final ExecutorService executor;
+    protected final Path indexPath;
 
-    private IndexFiles(KnnVectorDict vectorDict, int numCores) throws IOException {
+    private IndexFiles(KnnVectorDict vectorDict, int numCores, Path indexPath) throws IOException {
         this.vectorDict = vectorDict;
         this.executor = Executors.newFixedThreadPool(numCores);
+        this.indexPath = indexPath;
     }
 
     /** Index all text files under a directory. */
@@ -131,9 +133,8 @@ public class IndexFiles implements AutoCloseable {
             // iwc.setRAMBufferSizeMB(256.0);
 
             try (IndexWriter writer = new IndexWriter(dir, iwc);
-                 IndexFiles indexFiles = new IndexFiles(null, threads)) {
-                indexFiles.indexDocs(writer, docDir);
-
+                    IndexFiles indexFiles = new IndexFiles(null, threads, Path.of(indexPath))) {
+                indexFiles.indexDocs(writer, docDir, false);
                 // NOTE: if you want to maximize search performance,
                 // you can optionally call forceMerge here. This can be
                 // a terribly costly operation, so generally it's only
@@ -177,15 +178,24 @@ public class IndexFiles implements AutoCloseable {
      *               files to indt
     * @throws IOException If there is a low-level I/O error
      */
-    void indexDocs(IndexWriter writer, Path docDir) throws IOException {
-        final Runnable worker = new ThreadedIndex(writer, docDir, this.executor);
-        executor.execute(worker);
+    void indexDocs(IndexWriter writer, Path docDir, boolean partialIndex, int depth) throws IOException {
+        // Crea una tarea para el pool de threads por cada carpeta que encuentra en el path pasado
+        DirectoryStream<Path> directoryStream = Files.newDirectoryStream(docDir);
 
+        for (final Path subpath : directoryStream) {
+            if (Files.isDirectory(subpath)) {
+                final Runnable worker;
+//                if (partialIndex)
+                    worker = new ThreadedIndex(writer, subpath, executor, this.indexPath);
+//                else
+//                    worker = new ThreadedIndex(writer, subpath, executor);
+                executor.execute(worker);
+            }
+        }
 
         /* Wait up to 1 minute to finish all the previously submitted jobs */
-
         try {
-            executor.awaitTermination(20, TimeUnit.SECONDS);
+            executor.awaitTermination(60, TimeUnit.MINUTES);
             executor.shutdownNow(); //garantee shutdown
         } catch (final InterruptedException e) {
             e.printStackTrace();
@@ -194,10 +204,17 @@ public class IndexFiles implements AutoCloseable {
         System.out.println("All threads finished");
     }
 
+    void indexDocs(IndexWriter writer, Path docDir, boolean partialIndex) throws IOException {
+        indexDocs(writer, docDir, partialIndex, -1);
+    }
+
     public static class ThreadedIndex implements Runnable {
 
         private final Path path;
         private final IndexWriter writer;
+        private final boolean partialIndexing;
+        private Directory indexingPathDir = null;
+        private Path indexingPath = null;
         private final ExecutorService executor;
         private static volatile int threadCount = 1;
         static final FieldType TYPE_STORED_INDEXED = new FieldType();
@@ -205,11 +222,21 @@ public class IndexFiles implements AutoCloseable {
             TYPE_STORED_INDEXED.setStored(true);
             TYPE_STORED_INDEXED.setIndexOptions(IndexOptions.DOCS_AND_FREQS_AND_POSITIONS);
         }
-
+        // Non-partial index threaded index
         public ThreadedIndex(IndexWriter writer, final Path folder, ExecutorService executor) {
             this.writer = writer;
             this.path = folder;
             this.executor = executor;
+            this.partialIndexing = false;
+        }
+        // PartialIndex threaded index
+        public ThreadedIndex(IndexWriter writer, final Path folder, ExecutorService executor, Path indexPath) throws IOException {
+            this.writer = writer;
+            this.path = folder;
+            this.executor = executor;
+            this.partialIndexing = true;
+            this.indexingPath = Paths.get(indexPath+"/"+folder.getFileName());
+            this.indexingPathDir = FSDirectory.open(this.indexingPath);
         }
 
         synchronized private void incrementThreadCount(){
@@ -299,8 +326,18 @@ public class IndexFiles implements AutoCloseable {
                 DirectoryStream<Path> directoryStream = Files.newDirectoryStream(path);
 
                 for (final Path subpath : directoryStream) {
+
                     if (Files.isDirectory(subpath)) {
-                        final Runnable worker = new ThreadedIndex(this.writer, subpath, this.executor);
+                        final Runnable worker;
+                        if (this.partialIndexing) {
+                            Analyzer analyzer = new StandardAnalyzer();
+                            IndexWriterConfig iwc = new IndexWriterConfig(analyzer);
+                            System.out.println("Thread " + Thread.currentThread().getName() + " Trying to get " + this.indexingPath);
+                            IndexWriter partialWriter = new IndexWriter(this.indexingPathDir, iwc);
+                            worker = new ThreadedIndex(partialWriter, subpath, this.executor, this.indexingPath);
+                        } else {
+                            worker = new ThreadedIndex(this.writer, subpath, this.executor);
+                        }
                         incrementThreadCount();
                         this.executor.execute(worker);
                     } else {
