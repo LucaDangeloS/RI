@@ -62,13 +62,15 @@ public class IndexFiles implements AutoCloseable {
     /** Index all text files under a directory. */
     public static void main(String[] args) throws Exception {
         String usage = "java org.apache.lucene.demo.IndexFiles"
-                + " [-index INDEX_PATH] [-docs DOCS_PATH] [-update] [-numThreads NUM_THREADS]\n\n"
+                + " [-index INDEX_PATH] [-docs DOCS_PATH] [-update] [-numThreads NUM_THREADS] [-openmode append | create | create_or_append]\n\n"
                 + "This indexes the documents in DOCS_PATH, creating a Lucene index"
                 + "in INDEX_PATH that can be searched with SearchFiles\n";
         String indexPath = "index";
         String docsPath = null;
         int threads = Runtime.getRuntime().availableProcessors();
         boolean create = true;
+        String openmode = null;
+
         for (int i = 0; i < args.length; i++) {
             switch (args[i]) {
                 case "-index":
@@ -80,11 +82,14 @@ public class IndexFiles implements AutoCloseable {
                 case "-update":
                     create = false;
                     break;
-                case "-create":
-                    create = true;
-                    break;
+//                case "-create":
+//                    create = true;
+//                    break;
                 case "-numThreads":
                     threads = Integer.parseInt(args[++i]);
+                    break;
+                case "-openmode":
+                    openmode = args[++i];
                     break;
                 default:
                     throw new IllegalArgumentException("unknown parameter " + args[i]);
@@ -98,6 +103,11 @@ public class IndexFiles implements AutoCloseable {
 
         if (threads <= 0) {
             System.err.println("Thread numbers must be a non-zero positive integer.");
+            System.exit(1);
+        }
+
+        if(openmode != null && ( openmode.compareTo("append")) != 0 && openmode.compareTo("create") != 0 && openmode.compareTo("create_or_append") != 0){
+            System.err.println("openmode must be append, create or create_or_append");
             System.exit(1);
         }
 
@@ -116,13 +126,27 @@ public class IndexFiles implements AutoCloseable {
             Analyzer analyzer = new StandardAnalyzer();
             IndexWriterConfig iwc = new IndexWriterConfig(analyzer);
 
-            if (create) {
+            if(create){
+                iwc.setOpenMode(OpenMode.CREATE);
+            }else{
+                iwc.setOpenMode(OpenMode.CREATE_OR_APPEND);
+            }
+
+            if ( openmode != null && openmode.compareTo("create") == 0) {
                 // Create a new index in the directory, removing any
                 // previously indexed documents:
+
                 iwc.setOpenMode(OpenMode.CREATE);
-            } else {
+            } else if ( (openmode != null && openmode.compareTo("create_or_append") == 0) || (openmode != null && openmode.compareTo("append") == 0)  ){
+//                if(openmode.compareTo("append") == 0){
+//                    iwc.setOpenMode(OpenMode.APPEND);
+//                }else{
+
                 // Add new documents to an existing index:
                 iwc.setOpenMode(OpenMode.CREATE_OR_APPEND);
+
+//                }           AQUI AGRUPÉ CREATE_OR_APPEND Y APPEND PARA EVITAR PROBLEMAS EN EL CASO DE QUE SE ELIJA
+//                APPEND CON UN INDICE QUE NO SE HA CREADO          ASI ES MAS GENERAL Y EVITA PROBLEMAS
             }
 
             // Optional: for better indexing performance, if you
@@ -186,7 +210,7 @@ public class IndexFiles implements AutoCloseable {
             if (Files.isDirectory(subpath)) {
                 final Runnable worker;
 //                if (partialIndex)
-                    worker = new ThreadedIndex(writer, subpath, executor, this.indexPath);
+                    worker = new ThreadedIndex(writer, subpath, executor);
 //                else
 //                    worker = new ThreadedIndex(writer, subpath, executor);
                 executor.execute(worker);
@@ -295,12 +319,12 @@ public class IndexFiles implements AutoCloseable {
                         new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))));
 
                 doc.add(new TextField("contentsStored",
-                        new String(stream.readAllBytes(), StandardCharsets.UTF_8), Field.Store.YES));
+                        new String(stream.readAllBytes(), StandardCharsets.UTF_8), Field.Store.YES));       //AQUI PORQUE CAMBIA LA SINTAXI SI EN EL ENUNCIADO DICE QUE LO UNICO QUE CAMBIAE ES SI ES STORED O NO
 
                 doc.add(new TextField("hostname", InetAddress.getLocalHost().getHostName(), Field.Store.YES));
                 doc.add(new TextField("thread", Thread.currentThread().getName(), Field.Store.YES));
 //                doc.add(new TextField("type", Thread.currentThread().getName(), Field.Store.YES));
-                doc.add(new FloatPoint("sizeKB", (float) Files.size(file)/1024));
+                doc.add(new FloatPoint("sizeKB", (float) Files.size(file)/1024));           //FALTARIA PASARLO A STORED Y AÑADIR OTRO CAMPO QUE SEA TYPE?????
 
                 if (writer.getConfig().getOpenMode() == OpenMode.CREATE) {
                     // New index, so we just add the document (no old document can be there):
