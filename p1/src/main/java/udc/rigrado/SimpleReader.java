@@ -73,7 +73,7 @@ public class SimpleReader {
 			System.out.println("sizeKB = " + doc.get("sizeKB")); //?
 
 		}
-
+		System.exit(0);
 		/**
 		 * Note doc.get() returns null for the fields that were not stored
 		 */
