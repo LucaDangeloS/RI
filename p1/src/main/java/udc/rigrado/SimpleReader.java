@@ -59,6 +59,7 @@ public class SimpleReader {
 				e1.printStackTrace();
 			}
 			System.out.println("Documento " + i);
+			System.out.println("path = " + doc.get("path"));
 			System.out.println("modified = " + doc.get("modified"));
 			System.out.println("creationTime = " + doc.get("creationTime"));
 			System.out.println("lastAccessTime = " + doc.get("lastAccessTime"));
@@ -70,7 +71,9 @@ public class SimpleReader {
 //			System.out.println("contentsStored = " + doc.get("contentsStored"));
 			System.out.println("hostname = " + doc.get("hostname"));
 			System.out.println("thread = " + doc.get("thread"));
-			System.out.println("sizeKB = " + doc.get("sizeKB")); //?
+			System.out.println("sizeKB = " + doc.get("sizeKBStored"));
+			System.out.println("onlyTopLines = " + doc.get("onlyTopLines"));
+			System.out.println("onlyBottomLines = " + doc.get("onlyBottomLines"));
 
 		}
 		System.exit(0);

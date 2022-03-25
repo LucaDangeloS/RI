@@ -16,20 +16,18 @@ package udc.rigrado;
  * limitations under the License.
  */
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.InetAddress;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -51,25 +49,27 @@ public class IndexFiles implements AutoCloseable {
 
     private final ExecutorService executor;
     private final Path indexPath;
+    private static final String DEFAULT_PROPERTIES_PATH = "./src/main/resources/config.properties";
+    private final Properties properties = new Properties();
     private enum modes {
-        CREATE("create", OpenMode.CREATE),
-        APPEND("append", OpenMode.APPEND),
-        CREATE_OR_APPEND("create_or_append", OpenMode.CREATE_OR_APPEND);
+        CREATE(OpenMode.CREATE),
+        APPEND(OpenMode.APPEND),
+        CREATE_OR_APPEND(OpenMode.CREATE_OR_APPEND);
 
-        private final String text;
         private final OpenMode openMode;
 
-        modes(String string, OpenMode openMode) {
-            this.text = string;
+        modes(OpenMode openMode) {
             this.openMode = openMode;
-        }
-        @Override
-        public String toString() {
-            return this.text;
         }
     }
 
     private IndexFiles(int numCores, Path indexPath) throws IOException {
+        try {
+            properties.load(new FileInputStream(DEFAULT_PROPERTIES_PATH));
+            System.out.println("Properties file loaded successfully!");
+        } catch (IOException e) {
+            System.err.println("Error reading properties file: " + e);
+        }
         this.executor = Executors.newFixedThreadPool(numCores);
         this.indexPath = indexPath;
     }
@@ -78,17 +78,16 @@ public class IndexFiles implements AutoCloseable {
     public static void main(String[] args) throws Exception {
         String usage = "java org.apache.lucene.demo.IndexFiles"
                 + " [-index INDEX_PATH] [-docs DOCS_PATH] [-update] [-numThreads NUM_THREADS] [-openmode append | create | create_or_append]\n\n"
-                + "This indexes the documents in DOCS_PATH, creating a Lucene index"
-                + "in INDEX_PATH that can be searched with SearchFiles\n";
+                + "This indexes the documents in DOCS_PATH, creating a Lucene index\n";
         String indexPath = "index";
         String docsPath = null;
         boolean partialIndex = false;
-        int threads = Runtime.getRuntime().availableProcessors();
         boolean update = false;
-        String mode = null;
+        int threads = Runtime.getRuntime().availableProcessors();
         modes openmode = modes.CREATE;
-        String depth = null;
+        String mode = null;
         int depth_int = -1;
+        String depth = null;
 
         for (int i = 0; i < args.length; i++) {
             switch (args[i]) {
@@ -129,7 +128,7 @@ public class IndexFiles implements AutoCloseable {
         }
 
         if (mode != null) {
-            try { openmode = modes.valueOf(mode); }
+            try { openmode = modes.valueOf(mode.toUpperCase()); }
             catch (IllegalArgumentException e) {
                 System.err.println("Openmode must be append, create or create_or_append");
                 System.exit(1);
@@ -165,7 +164,7 @@ public class IndexFiles implements AutoCloseable {
 
             try (IndexWriter writer = new IndexWriter(dir, iwc);
                     IndexFiles indexFiles = new IndexFiles(threads, Path.of(indexPath))) {
-                indexFiles.indexDocs(writer, docDir, depth_int, partialIndex, update); //TODO check if it's needed
+                indexFiles.indexDocs(writer, docDir, depth_int, partialIndex, update);
             } finally {
                 IOUtils.close();
             }
@@ -177,6 +176,35 @@ public class IndexFiles implements AutoCloseable {
             }
         } catch (IOException e) {
             System.out.println(" caught a " + e.getClass() + "\n with message: " + e.getMessage());
+        }
+    }
+
+    // Auxiliary structure to ease passing down information to the threads
+    public static class IndexInfo {
+        final ExecutorService executor;
+        final boolean update;
+        final Set<String> fileTypesList;
+        final boolean onlyTopLines;
+        final int topLines;
+        final boolean onlyBottomLines;
+        final int bottomLines;
+
+        public IndexInfo(ExecutorService executor, boolean update, Properties prop) {
+            this.executor = executor;
+            this.update = update;
+            String tmp = prop.getProperty("onlyFiles");
+            if (tmp != null) {
+                String[] fileTypesSplit = tmp.split(" ");
+                this.fileTypesList = Set.of(fileTypesSplit);
+            } else this.fileTypesList = null;
+            tmp = prop.getProperty("onlyTopLines");
+            if (this.onlyTopLines = (tmp != null)) {
+                this.topLines = Integer.parseInt(tmp);
+            } else {this.topLines = -1;}
+            tmp = prop.getProperty("onlyBottomLines");
+            if (this.onlyBottomLines = (tmp != null)) {
+                this.bottomLines = Integer.parseInt(tmp);
+            } else {this.bottomLines = -1;}
         }
     }
 
@@ -199,9 +227,9 @@ public class IndexFiles implements AutoCloseable {
     * @throws IOException If there is a low-level I/O error
      */
     void indexDocs(IndexWriter writer, Path docDir, int depth, boolean partialIndex, boolean update) throws IOException {
-        // Crea una tarea para el pool de threads por cada carpeta que encuentra en el path pasado
         DirectoryStream<Path> directoryStream = Files.newDirectoryStream(docDir);
         ArrayList<IndexWriter> partialWriters = new ArrayList<>();
+        IndexInfo ii = new IndexInfo(executor, update, this.properties);
 
         // No se indexa nada
         if (depth == 0) return;
@@ -216,10 +244,12 @@ public class IndexFiles implements AutoCloseable {
                     partialIwc.setOpenMode(writer.getConfig().getOpenMode());
                     Directory partialDIr = FSDirectory.open(Paths.get(indexPath + "-" + subpath.getFileName()));
                     IndexWriter partialWriter = new IndexWriter(partialDIr, partialIwc);
+
                     partialWriters.add(partialWriter);
-                    worker = new ThreadedIndex(partialWriter, subpath, executor, depth - 1, update);
+
+                    worker = new ThreadedIndex(partialWriter, subpath, ii,depth-1);
                 } else
-                    worker = new ThreadedIndex(writer, subpath, executor, depth - 1, update);
+                    worker = new ThreadedIndex(writer, subpath, ii, depth-1);
                 executor.execute(worker);
             }
         }
@@ -247,21 +277,25 @@ public class IndexFiles implements AutoCloseable {
         private final Path path;
         private final IndexWriter writer;
         private final int depth;
-        private final boolean update;
         private final ExecutorService executor;
+        private final IndexInfo info;
         private static volatile int threadCount = 0;
         static final FieldType TYPE_STORED_INDEXED = new FieldType();
         static {
             TYPE_STORED_INDEXED.setStored(true);
             TYPE_STORED_INDEXED.setIndexOptions(IndexOptions.DOCS_AND_FREQS_AND_POSITIONS);
+            TYPE_STORED_INDEXED.setStoreTermVectors(true);
+            TYPE_STORED_INDEXED.setStoreTermVectorPositions(true);
+            TYPE_STORED_INDEXED.freeze();
         }
         // Non-partial index threaded index
-        public ThreadedIndex(IndexWriter writer, final Path folder, ExecutorService executor, int depth, boolean update) {
+        public ThreadedIndex(IndexWriter writer, final Path folder,
+                             IndexInfo info, int depth) {
             this.writer = writer;
             this.path = folder;
-            this.executor = executor;
+            this.executor = info.executor;
             this.depth = depth;
-            this.update = update;
+            this.info = info;
         }
 
         synchronized private void incrementThreadCount(){ threadCount++; }
@@ -275,6 +309,7 @@ public class IndexFiles implements AutoCloseable {
             try (InputStream stream = Files.newInputStream(file)) {
                 // make a new, empty document
                 Document doc = new Document();
+                OpenMode openmode = writer.getConfig().getOpenMode();
 
                 Field pathField = new StringField("path", file.toString(), Field.Store.YES);
                 doc.add(pathField);
@@ -285,6 +320,15 @@ public class IndexFiles implements AutoCloseable {
                 FileTime lastAccessTime = attr.lastAccessTime();
                 FileTime lastModifiedTime = attr.lastModifiedTime();
                 float size = (float) Files.size(file)/1024;
+
+                String filetype;
+                if (attr.isRegularFile())
+                    filetype = "RegularFile";
+                else if (attr.isSymbolicLink())
+                    filetype = "SymbolicLink";
+                else if (attr.isDirectory())
+                    filetype = "Directory";
+                else filetype = "other";
 
                 doc.add(new LongPoint("modified", lastModified.toMillis()));
                 doc.add(new StringField("creationTime", creationTime.toString(), Field.Store.YES));
@@ -302,43 +346,79 @@ public class IndexFiles implements AutoCloseable {
                         new String(stream.readAllBytes(), StandardCharsets.UTF_8), Field.Store.YES));
                 doc.add(new StringField("hostname", InetAddress.getLocalHost().getHostName(), Field.Store.YES));
                 doc.add(new StringField("thread", Thread.currentThread().getName(), Field.Store.YES));
-//                doc.add(new StringField("type", Thread.currentThread().getName(), Field.Store.YES)); //TODO add file type
-                doc.add(new StringField("storedSizeKB", String.valueOf(size), Field.Store.YES));
+                doc.add(new StringField("type", filetype, Field.Store.YES));
+                doc.add(new StringField("SizeKBStored", String.valueOf(size), Field.Store.YES));
                 doc.add(new FloatPoint("sizeKB", size));
 
-                if (writer.getConfig().getOpenMode() == OpenMode.CREATE) {
-                    // New index, so we just add the document (no old document can be there):
-                    System.out.println(Thread.currentThread().getName() + " adding " + file);
-                    writer.addDocument(doc);
-                } else {
-                    // Existing index (an old copy of this document may have been indexed) so
-                    // we use updateDocument instead to replace the old one matching the exact
-                    // path, if present:
-                    System.out.println("updating " + file);
-                    writer.updateDocument(new Term("path", file.toString()), doc);
+                if (info.onlyBottomLines && info.topLines > 0) {
+                    Stream<String> lines = Files.lines(file);
+                    doc.add(new TextField("onlyTopLines",
+                            lines.limit(info.topLines+1).collect(Collectors.joining()), Field.Store.YES));
+                    lines.close();
+                }
+                if (info.onlyTopLines && info.bottomLines > 0) {
+                    Stream<String> lines = Files.lines(file);
+                    long len = lines.count();
+                    lines = Files.lines(file);
+                    final String lastLines = lines.skip(len - info.bottomLines).collect(Collectors.joining());
+                    doc.add(new TextField("onlyBottomLines", lastLines, Field.Store.YES));
+                    lines.close();
+                }
+
+                switch (openmode){
+                    case CREATE:
+                        System.out.println("Adding " + file);
+                        writer.addDocument(doc);
+                        break;
+                    case APPEND:
+                        if (info.update) {
+//                            IndexSearcher searcher = IndexSearcher();
+//                            TopDocs results = searcher.search(new TermQuery(new Term("path", file.toString())), 1);
+//                            if (results.totalHits > 0){
+//                                writer.updateDocument(new Term("path", file.toString()), doc);
+//                            }
+                            System.out.println("Updating " + file);
+                            writer.updateDocument(new Term("path", file.toString()), doc);
+                        } else {
+                            // Acepta duplicados
+                            System.out.println("Adding " + file);
+                            writer.addDocument(doc);
+                        }
+                        break;
+                    case CREATE_OR_APPEND:
+                        System.out.println("Indexing " + file);
+                        writer.updateDocument(new Term("path", file.toString()), doc);
+                        break;
+                    default:
+                        break;
                 }
             }
         }
 
-        /**
-         * This is the work that the current thread will do when processed by the pool.
-         * In this case, it will only print some information.
-         */
         @Override
         public void run() {
             incrementThreadCount();
+            // Iterate over directory, indexing files and making recursive calls with directories
+
             try {
                 DirectoryStream<Path> directoryStream = Files.newDirectoryStream(path);
 
                 for (final Path subpath : directoryStream) {
-
                     if (Files.isDirectory(subpath)) {
                         if (this.depth == 0) break;
                         final Runnable worker =
-                                new ThreadedIndex(this.writer, subpath, this.executor, this.depth - 1, this.update);
+                                new ThreadedIndex(this.writer, subpath, this.info, this.depth-1);
                         this.executor.execute(worker);
                     } else {
-                        indexDoc(writer, subpath);
+                        if (info.fileTypesList == null)
+                            indexDoc(writer, subpath);
+                        else {
+                            String file_str = subpath.getFileName().toString();
+                            int i = file_str.lastIndexOf(".");
+                            String extension = file_str.substring(i);
+                            if (info.fileTypesList.contains(extension))
+                                indexDoc(writer, subpath);
+                        }
                     }
                 }
                 decrementThreadCount();
