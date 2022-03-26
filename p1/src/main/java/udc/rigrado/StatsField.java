@@ -1,8 +1,6 @@
 package udc.rigrado;
 
-import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
-import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.search.CollectionStatistics;
 import org.apache.lucene.search.IndexSearcher;
@@ -11,12 +9,8 @@ import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.IOUtils;
 
 import java.io.IOException;
-import java.lang.annotation.Documented;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Set;
 
 public class StatsField implements AutoCloseable {
 
@@ -52,7 +46,7 @@ public class StatsField implements AutoCloseable {
     }
 
 
-    private void readStats(String indexPath, String field) throws IOException {
+    private void readStats(String indexPath, String field) {
         CollectionStatistics collectionStats = null;
         HashSet<IndexableField> fieldList = new HashSet<>();
 
