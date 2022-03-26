@@ -1,5 +1,6 @@
 package udc.rigrado;
 
+import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexableField;
@@ -10,8 +11,12 @@ import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.IOUtils;
 
 import java.io.IOException;
+import java.lang.annotation.Documented;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class StatsField implements AutoCloseable {
 
@@ -35,6 +40,12 @@ public class StatsField implements AutoCloseable {
                     throw new IllegalArgumentException("Unknown parameter " + args[i]);
             }
         }
+
+        if (indexPath == null) {
+            System.err.println("Usage: " + usage);
+            System.exit(1);
+        }
+
         try (StatsField statsField = new StatsField()) {
             statsField.readStats(indexPath, field);
         }
@@ -42,37 +53,38 @@ public class StatsField implements AutoCloseable {
 
 
     private void readStats(String indexPath, String field) throws IOException {
-        if (indexPath == null) {
-            System.err.println("No index path was given, the program can't continue");
-            System.exit(1);
-        }
+        CollectionStatistics collectionStats = null;
+        HashSet<IndexableField> fieldList = new HashSet<>();
+
         try {
             Directory indexDir = FSDirectory.open(Paths.get(indexPath));
             DirectoryReader indexReader = DirectoryReader.open(indexDir);
             IndexSearcher searcher = new IndexSearcher(indexReader);
-            CollectionStatistics modelDescriptionStatistics = null;
 
             if (field != null)
-                modelDescriptionStatistics = searcher.collectionStatistics(field);
-//            else {
-//                fields = doc.getFields();
-//                // Note doc.getFields() gets the stored fields
-//
-//                for (IndexableField field : fields) {
-//                    String fieldName = field.name();
-//                    System.out.println(fieldName); //  + ": " + doc.get(fieldName)
-//
-//                }
-//            }
+                printStats(searcher.collectionStatistics(field));
+            else {
+                for (int i = 0; i < indexReader.numDocs(); i++) {
+                    fieldList.addAll(indexReader.document(i).getFields());
+                }
+                for (IndexableField idField: fieldList) {
+                    printStats(searcher.collectionStatistics(idField.name()));
+                }
+            }
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);
         }
-//        System.out.println("\nmodel Description Statistics\n");
-//        System.out.println("\nfield= " + modelDescriptionStatistics.field() + " docCount= "
-//                + modelDescriptionStatistics.docCount() + " maxDoc= " + modelDescriptionStatistics.maxDoc()
-//                + " sumDocFreq= " + modelDescriptionStatistics.sumDocFreq() + " sumTotalFreq= "
-//                + modelDescriptionStatistics.sumTotalTermFreq());
+    }
+
+    private void printStats(CollectionStatistics stats) {
+        System.out.println("\nStatistics for field '" + stats.field() + "'");
+        System.out.println(
+              "\ndocCount= " + stats.docCount()
+            + "\nmaxDoc= " + stats.maxDoc()
+            + "\nsumDocFreq= " + stats.sumDocFreq()
+            + "\nsumTotalFreq= " + stats.sumTotalTermFreq()
+        );
     }
 
     @Override
