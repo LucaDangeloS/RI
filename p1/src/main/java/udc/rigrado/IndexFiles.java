@@ -51,14 +51,14 @@ public class IndexFiles implements AutoCloseable {
     private final Path indexPath;
     private static final String DEFAULT_PROPERTIES_PATH = "./src/main/resources/config.properties";
     private final Properties properties = new Properties();
-    private enum modes {
+    private enum Modes {
         CREATE(OpenMode.CREATE),
         APPEND(OpenMode.APPEND),
         CREATE_OR_APPEND(OpenMode.CREATE_OR_APPEND);
 
         private final OpenMode openMode;
 
-        modes(OpenMode openMode) {
+        Modes(OpenMode openMode) {
             this.openMode = openMode;
         }
     }
@@ -84,7 +84,7 @@ public class IndexFiles implements AutoCloseable {
         boolean partialIndex = false;
         boolean update = false;
         int threads = Runtime.getRuntime().availableProcessors();
-        modes openmode = modes.CREATE;
+        Modes openmode = Modes.CREATE;
         String mode = null;
         int depth_int = -1;
         String depth = null;
@@ -128,7 +128,7 @@ public class IndexFiles implements AutoCloseable {
         }
 
         if (mode != null) {
-            try { openmode = modes.valueOf(mode.toUpperCase()); }
+            try { openmode = Modes.valueOf(mode.toUpperCase()); }
             catch (IllegalArgumentException e) {
                 System.err.println("Openmode must be append, create or create_or_append");
                 System.exit(1);
