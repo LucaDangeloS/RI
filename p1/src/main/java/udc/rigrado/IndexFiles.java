@@ -356,9 +356,9 @@ public class IndexFiles implements AutoCloseable {
                     long len = lines.count();
                     lines = Files.lines(file);
                     if (len <= info.topLines)
-                        linesToAdd = lines.collect(Collectors.joining());
+                        linesToAdd = lines.collect(Collectors.joining("\n"));
                     else {
-                        linesToAdd = lines.limit(info.topLines+1).collect(Collectors.joining());
+                        linesToAdd = lines.limit(info.topLines).collect(Collectors.joining("\n"));
                     }
                     doc.add(new TextField("onlyTopLines", linesToAdd, Field.Store.YES));
                     lines.close();
@@ -369,9 +369,9 @@ public class IndexFiles implements AutoCloseable {
                     long len = lines.count();
                     lines = Files.lines(file);
                     if (len <= info.bottomLines) {
-                        lastLines = lines.collect(Collectors.joining());
+                        lastLines = lines.collect(Collectors.joining("\n"));
                     } else {
-                        lastLines = lines.skip(len - info.bottomLines).collect(Collectors.joining());
+                        lastLines = lines.skip(len - info.bottomLines).collect(Collectors.joining("\n"));
                     }
                     doc.add(new TextField("onlyBottomLines", lastLines, Field.Store.YES));
                     lines.close();

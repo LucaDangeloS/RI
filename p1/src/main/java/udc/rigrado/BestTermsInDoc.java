@@ -7,6 +7,8 @@ import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.IOUtils;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -19,8 +21,6 @@ public class BestTermsInDoc implements AutoCloseable {
         DF(),
         IDF(),
         TFXIDF();
-
-//        private void order(){}
     }
 
     private final String indexPath;
@@ -94,6 +94,7 @@ public class BestTermsInDoc implements AutoCloseable {
     private void findBestTerms(String outputfile) throws IOException {
         IndexReader reader = null;
         Terms termVector;
+        FileWriter outputFile = null;
 
         try {
             reader = DirectoryReader.open(FSDirectory.open(Paths.get(indexPath)));
@@ -106,18 +107,38 @@ public class BestTermsInDoc implements AutoCloseable {
             System.out.println("Document has no term vector");
             System.exit(-1);
         }
-
+        // Generate sorted terms arrayList
         ArrayList<TermInfo> sortedTerms = getTermInfo(reader, field, order);
-        System.out.println("Best terms in Document " + docID + " sorted by " + order.name() + ":");
-        String stats;
+
+        // Create variable where every line will be stored to be printed/written
+        String stats = "Best terms in Document " + docID + " sorted by " + order.name() + ":";
+
+        // Create output file if passed as argument
+        if (outputfile != null) {
+            outputFile = new FileWriter(outputfile);
+            try { outputFile.write(stats); }
+            catch (IOException e) { throw new IOException("Error writing to output file provided"); }
+        }
+        else {
+            System.out.println(stats);
+        }
+
         for (int i = 0; i < top; i++) {
             try {
-                stats = getStats(sortedTerms.get(i));
-                System.out.print("\nNº "  + (i+1) + ": " + stats);
+                stats = "\nNº "  + (i + 1) + ": " + getStats(sortedTerms.get(i));
+                if (outputfile == null)
+                    System.out.print(stats);
+                else {
+                    outputFile.write(stats);
+                }
             } catch (IndexOutOfBoundsException e) {
-                System.out.println("No more terms available for this document");
+                System.out.println("\nNo more terms available for this document");
                 break;
             }
+        }
+        if (outputFile != null) {
+            outputFile.flush();
+            outputFile.close();
         }
     }
 
