@@ -1,20 +1,16 @@
 package udc.rigrado;
 
 import org.apache.lucene.index.*;
-import org.apache.lucene.search.CollectionStatistics;
-import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.similarities.ClassicSimilarity;
 import org.apache.lucene.search.similarities.TFIDFSimilarity;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.IOUtils;
 
-import org.apache.lucene.document.Document;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collections;
 
 public class BestTermsInDoc implements AutoCloseable {
 
@@ -44,8 +40,7 @@ public class BestTermsInDoc implements AutoCloseable {
     public static void main(String[] args) throws Exception {
         String usage = "java StatsField"
                 + " [-index INDEX_PATH] [-docID D] [-field FIELD_NAME]"
-                + " [-top N] [-order tf | df | idf | tfxidf] [-outputFile FILE]\n\n"
-                + ".\n"
+                + " [-top N] [-order tf | df | idf | tfxidf] [-outputFile FILE]\n"
                 + "N and D should be positive integers.\n";
         String indexPath = null;
         Order order = null;
@@ -112,51 +107,77 @@ public class BestTermsInDoc implements AutoCloseable {
             System.exit(-1);
         }
 
-        System.out.println(getIdf(reader, field).toString());
-//        ArrayList<TermValues> termValuesArray = new ArrayList<>();
-//
-//
-//        while ((tmpTerm = iterator.next()) != null) {
-//
-//            Term term = new Term(field, tmpTerm);
-//            long indexDf = reader.docFreq(term);
-//            double idf = classicSimilarity.idf(docsCount, indexDf);
-//            int df = reader.docFreq(term);
-//            docs = iterator.postings(docs, PostingsEnum.NONE);
-//
-//            while (docs.nextDoc() != PostingsEnum.NO_MORE_DOCS) {
-//
-//                double tf = classicSimilarity.tf(docs.freq());
-//                termValuesArray.add(new TermValues(term.text(), tf, df, idf));
-//            }
-//        }
+        ArrayList<TermInfo> sortedTerms = getTermInfo(reader, field, order);
+        System.out.println("Best terms in Document " + docID + " sorted by " + order.name() + ":");
+        String stats;
+        for (int i = 0; i < top; i++) {
+            try {
+                stats = getStats(sortedTerms.get(i));
+                System.out.print("\nNº "  + (i+1) + ": " + stats);
+            } catch (IndexOutOfBoundsException e) {
+                System.out.println("No more terms available for this document");
+                break;
+            }
+        }
     }
 
-    Map<String, Float> getIdf(IndexReader reader, String strField) throws IOException {
+    public static class TermInfo implements Comparable<TermInfo> {
+        final String term;
+        final float df;
+        final float tf;
+        final float idf;
+        final float tfxidf;
+        final Order order;
+
+        public TermInfo(String term, float df, float tf, float idf, Order order) {
+            this.term = term;
+            this.df = df;
+            this.tf = tf;
+            this.idf = idf;
+            this.tfxidf = tf * idf;
+            this.order = order;
+        }
+
+        @Override
+        public int compareTo(TermInfo o) {
+            switch (o.order) {
+                case DF:
+                    return Float.compare(o.df, this.df);
+                case TF:
+                    return Float.compare(o.tf, this.tf);
+                case IDF:
+                    return Float.compare(o.idf, this.idf);
+                case TFXIDF:
+                    return Float.compare(o.tfxidf, this.tfxidf);
+                default:
+                    throw new IllegalArgumentException("-order option not recognized, must be [df | tf | idf | tfxidf]");
+            }
+        }
+    }
+
+    ArrayList<TermInfo> getTermInfo(IndexReader reader, String strField, Order order) throws IOException {
         TermsEnum termVectors = reader.getTermVector(docID, strField).iterator();
-        Map<String, Float> freqs = new HashMap<>();
+        ArrayList<TermInfo> freqs = new ArrayList<>();
         TFIDFSimilarity similarity = new ClassicSimilarity();
         BytesRef term;
 
         while ((term = termVectors.next()) != null) {
             Term tmpterm = new Term(strField, termVectors.term());
             float df = reader.docFreq(tmpterm);
-            float tf = similarity.tf(termVectors.totalTermFreq());
-            float idf = similarity.idf((long) df, reader.numDocs());
-            float tfxidf =
-                    freqs.put(term.utf8ToString(), idf);
+            float tf = termVectors.totalTermFreq(); //similarity.tf(termVectors.totalTermFreq());
+            float idf = (float) Math.log(reader.numDocs() / df);
+            freqs.add(new TermInfo(term.utf8ToString(), df, tf, idf, order));
         }
+        Collections.sort(freqs);
         return freqs;
     }
 
-    private void printStats(CollectionStatistics stats) {
-        System.out.println("\nStatistics for field '" + stats.field() + "'");
-        System.out.println(
-                "\ndocCount= " + stats.docCount()
-                        + "\nmaxDoc= " + stats.maxDoc()
-                        + "\nsumDocFreq= " + stats.sumDocFreq()
-                        + "\nsumTotalFreq= " + stats.sumTotalTermFreq()
-        );
+    private String getStats(TermInfo termInfo) {
+        return "term '" + termInfo.term + "'"
+            + "\t TF= " + termInfo.tf
+            + "\t DF= " + termInfo.df
+            + "\t IDF= " + termInfo.idf
+            + "\t TFxIDF= " + termInfo.tfxidf + "\n";
     }
 
     @Override

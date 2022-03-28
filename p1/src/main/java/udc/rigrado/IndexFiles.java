@@ -350,17 +350,29 @@ public class IndexFiles implements AutoCloseable {
                 doc.add(new StringField("SizeKBStored", String.valueOf(size), Field.Store.YES));
                 doc.add(new FloatPoint("sizeKB", size));
 
-                if (info.onlyBottomLines && info.topLines > 0) { //TODO preguntar si tienen ese nombre
+                if (info.topLines > 0) { //TODO preguntar si tienen ese nombre
                     Stream<String> lines = Files.lines(file);
-                    doc.add(new TextField("onlyTopLines",
-                            lines.limit(info.topLines+1).collect(Collectors.joining()), Field.Store.YES));
-                    lines.close();
-                }
-                if (info.onlyTopLines && info.bottomLines > 0) {
-                    Stream<String> lines = Files.lines(file);
+                    String linesToAdd;
                     long len = lines.count();
                     lines = Files.lines(file);
-                    final String lastLines = lines.skip(len - info.bottomLines).collect(Collectors.joining());
+                    if (len <= info.topLines)
+                        linesToAdd = lines.collect(Collectors.joining());
+                    else {
+                        linesToAdd = lines.limit(info.topLines+1).collect(Collectors.joining());
+                    }
+                    doc.add(new TextField("onlyTopLines", linesToAdd, Field.Store.YES));
+                    lines.close();
+                }
+                if (info.bottomLines > 0) {
+                    Stream<String> lines = Files.lines(file);
+                    String lastLines;
+                    long len = lines.count();
+                    lines = Files.lines(file);
+                    if (len <= info.bottomLines) {
+                        lastLines = lines.collect(Collectors.joining());
+                    } else {
+                        lastLines = lines.skip(len - info.bottomLines).collect(Collectors.joining());
+                    }
                     doc.add(new TextField("onlyBottomLines", lastLines, Field.Store.YES));
                     lines.close();
                 }
