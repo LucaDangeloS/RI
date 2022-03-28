@@ -342,15 +342,15 @@ public class IndexFiles implements AutoCloseable {
                         DateTools.dateToString(new Date(lastModifiedTime.toMillis()), DateTools.Resolution.SECOND), Field.Store.YES));
                 doc.add(new TextField("contents",
                         new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))));
-                doc.add(new TextField("contentsStored",
-                        new String(stream.readAllBytes(), StandardCharsets.UTF_8), Field.Store.YES));
+                doc.add(new Field("contentsStored",
+                        new String(stream.readAllBytes(), StandardCharsets.UTF_8), TYPE_STORED_INDEXED));
                 doc.add(new StringField("hostname", InetAddress.getLocalHost().getHostName(), Field.Store.YES));
                 doc.add(new StringField("thread", Thread.currentThread().getName(), Field.Store.YES));
                 doc.add(new StringField("type", filetype, Field.Store.YES));
                 doc.add(new StringField("SizeKBStored", String.valueOf(size), Field.Store.YES));
                 doc.add(new FloatPoint("sizeKB", size));
 
-                if (info.onlyBottomLines && info.topLines > 0) {
+                if (info.onlyBottomLines && info.topLines > 0) { //TODO preguntar si tienen ese nombre
                     Stream<String> lines = Files.lines(file);
                     doc.add(new TextField("onlyTopLines",
                             lines.limit(info.topLines+1).collect(Collectors.joining()), Field.Store.YES));
