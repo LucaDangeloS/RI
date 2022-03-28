@@ -7,7 +7,6 @@ import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.IOUtils;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -146,11 +145,11 @@ public class BestTermsInDoc implements AutoCloseable {
         final String term;
         final float df;
         final float tf;
-        final float idf;
-        final float tfxidf;
+        final double idf;
+        final double tfxidf;
         final Order order;
 
-        public TermInfo(String term, float df, float tf, float idf, Order order) {
+        public TermInfo(String term, float df, float tf, double idf, Order order) {
             this.term = term;
             this.df = df;
             this.tf = tf;
@@ -167,9 +166,9 @@ public class BestTermsInDoc implements AutoCloseable {
                 case TF:
                     return Float.compare(o.tf, this.tf);
                 case IDF:
-                    return Float.compare(o.idf, this.idf);
+                    return Double.compare(o.idf, this.idf);
                 case TFXIDF:
-                    return Float.compare(o.tfxidf, this.tfxidf);
+                    return Double.compare(o.tfxidf, this.tfxidf);
                 default:
                     throw new IllegalArgumentException("-order option not recognized, must be [df | tf | idf | tfxidf]");
             }
@@ -178,15 +177,19 @@ public class BestTermsInDoc implements AutoCloseable {
 
     ArrayList<TermInfo> getTermInfo(IndexReader reader, String strField, Order order) throws IOException {
         TermsEnum termVectors = reader.getTermVector(docID, strField).iterator();
+        PostingsEnum docEnums = null;
         ArrayList<TermInfo> freqs = new ArrayList<>();
-        TFIDFSimilarity similarity = new ClassicSimilarity();
+//        TFIDFSimilarity similarity = new ClassicSimilarity();
         BytesRef term;
 
         while ((term = termVectors.next()) != null) {
             Term tmpterm = new Term(strField, termVectors.term());
+            docEnums = termVectors.postings(docEnums, PostingsEnum.FREQS);
+            //Advance to document it has extracted the term vector from
+            docEnums.nextDoc();
             float df = reader.docFreq(tmpterm);
-            float tf = termVectors.totalTermFreq(); //similarity.tf(termVectors.totalTermFreq());
-            float idf = (float) Math.log(reader.numDocs() / df);
+            float tf = docEnums.freq(); //similarity.tf(termVectors.totalTermFreq());
+            double idf = Math.log10((double) reader.numDocs() / (double) df);
             freqs.add(new TermInfo(term.utf8ToString(), df, tf, idf, order));
         }
         Collections.sort(freqs);
