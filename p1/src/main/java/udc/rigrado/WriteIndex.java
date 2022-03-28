@@ -79,18 +79,20 @@ public class WriteIndex implements AutoCloseable {
                         e1.printStackTrace();
                     }
                     if(doc != null){
-                        myWriter.append("Documento " + i + "\n");
+                        myWriter.append("\nDocument " + i + "\n");
                         fields = doc.getFields();
                         for (IndexableField field : fields) {
                             String fieldName = field.name();
                             if(fieldName.compareTo("contentsStored") == 0){
-                              myWriter.append( fieldName + ": \n" + doc.get(fieldName) );
+                              myWriter.append( fieldName + ": \n" + doc.get(fieldName)  +"\n" );
                             }else{
-                                myWriter.append( fieldName + ": " + doc.get(fieldName) + "\n");
+                                myWriter.append( fieldName + ": " + doc.get(fieldName) + "\n\n");
                             }
                         }
                     }
                 }
+                myWriter.close();
+                System.out.println("Document created succesfully in path " + outputfile + "\n");
 
             } catch (IOException e) {
                 System.out.println("An error occurred.");
