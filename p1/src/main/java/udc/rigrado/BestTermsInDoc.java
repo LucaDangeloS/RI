@@ -19,7 +19,7 @@ public class BestTermsInDoc implements AutoCloseable {
         TF(),
         DF(),
         IDF(),
-        TFXIDF();
+        TFXIDF()
     }
 
     private final String indexPath;
@@ -75,7 +75,7 @@ public class BestTermsInDoc implements AutoCloseable {
             }
         } catch (IllegalArgumentException e) {
             System.err.println("Usage: " + usage);
-            System.err.println(e);
+            e.printStackTrace();
             System.exit(1);
         }
 
@@ -101,16 +101,12 @@ public class BestTermsInDoc implements AutoCloseable {
             e.printStackTrace();
             System.exit(-1);
         }
-        termVector = reader.getTermVector(docID, field);
-        if (termVector == null) {
-            System.out.println("Document has no term vector");
-            System.exit(-1);
-        }
+
         // Generate sorted terms arrayList
         ArrayList<TermInfo> sortedTerms = getTermInfo(reader, field, order);
 
         // Create variable where every line will be stored to be printed/written
-        String stats = "Best terms in Document " + docID + " sorted by " + order.name() + ":";
+        String stats = "Best terms in Document " + docID + " for field '" + field + "' sorted by " + order.name() + ":";
 
         // Create output file if passed as argument
         if (outputfile != null) {
@@ -141,7 +137,7 @@ public class BestTermsInDoc implements AutoCloseable {
         }
     }
 
-    public static class TermInfo implements Comparable<TermInfo> {
+    private static class TermInfo implements Comparable<TermInfo> {
         final String term;
         final float df;
         final float tf;
@@ -177,6 +173,10 @@ public class BestTermsInDoc implements AutoCloseable {
 
     ArrayList<TermInfo> getTermInfo(IndexReader reader, String strField, Order order) throws IOException {
         TermsEnum termVectors = reader.getTermVector(docID, strField).iterator();
+        if (termVectors == null) {
+            System.err.println("The field specified in the Document has no term vector");
+            System.exit(-1);
+        }
         PostingsEnum docEnums = null;
         ArrayList<TermInfo> freqs = new ArrayList<>();
 //        TFIDFSimilarity similarity = new ClassicSimilarity();
