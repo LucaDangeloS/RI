@@ -180,7 +180,7 @@ public class BestTermsInDoc implements AutoCloseable {
         }
     }
 
-    ArrayList<TermInfo> getTermInfo(IndexReader reader, String strField, Order order) throws IOException {
+    private ArrayList<TermInfo> getTermInfo(IndexReader reader, String strField, Order order) throws IOException {
         // Obtiene el term vector del documento y el campo
         TermsEnum termVectors = reader.getTermVector(docID, strField).iterator();
         if (termVectors == null) {
@@ -197,7 +197,7 @@ public class BestTermsInDoc implements AutoCloseable {
             docEnums = termVectors.postings(docEnums, PostingsEnum.FREQS);
             // Avanza una posicion del posting para llegar al documento que se está analizando
             docEnums.nextDoc();
-            // Se obtiene document frquency
+            // Se obtiene document frequency
             float df = reader.docFreq(tmpterm);
             // Frecuencia de término para ese documento
             float tf = docEnums.freq();
