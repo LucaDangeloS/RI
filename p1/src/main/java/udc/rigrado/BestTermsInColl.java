@@ -44,14 +44,20 @@ public class BestTermsInColl {
         }
 
         if (top < 0) {
-            System.err.println("Top should be a positive integer.");
+            System.err.println("Top should be a positive integer");
+            System.exit(1);
+        }
+
+        if (field == null) {
+            System.err.println("A field must be specified");
             System.exit(1);
         }
 
         if (indexPath == null) {
-            System.err.println("Index path should be specified.");
+            System.err.println("Index path should be specified");
             System.exit(1);
         }
+
 
         IndexReader reader = null;
         try {
@@ -60,7 +66,7 @@ public class BestTermsInColl {
             e.printStackTrace();
             System.exit(-1);
         }
-
+        // Se obtiene la lista de termino de la colección ya ordenada
         ArrayList<TermInfo> topTerms = getTopTerms(reader, field, rev);
         String stats = "Best terms in Collection for field '" + field + "' sorted by ";
         if (rev)
@@ -70,7 +76,7 @@ public class BestTermsInColl {
 
         System.out.println(stats);
         TermInfo ti = null;
-
+        // Se itera sobre los top N terminos de la lista de terminos
         for (int i = 0; i < top; i++) {
             try {
                 ti = topTerms.get(i);
@@ -103,7 +109,7 @@ public class BestTermsInColl {
             if (this.df == null)
                 return Double.compare(o.idf, this.idf);
             else
-                return Float.compare(o.df, this.df);
+                return Integer.compare(o.df, this.df);
         }
 
         public Number getValue() {
@@ -126,27 +132,33 @@ public class BestTermsInColl {
     }
 
     private static HashMap<String, Integer> getDfOfTermsInColl(IndexReader reader, String fieldName) throws IOException {
-        // Itera sobre los leafs del reader para recoger todos los términos de todos los documentos de la colección
+        // Se obtiene lista de Leafs de la coleccion
         List<LeafReaderContext> leafList = reader.leaves();
         HashMap<String, Integer> map = new HashMap<>();
         Integer tmpDf = null;
 
+        // Itera sobre los leafs del reader para recoger todos los términos de todos los documentos de la colección
+        // Es más eficiente que iterar sobre la lista de terminos de cada documento en la colección
         for (LeafReaderContext leaf : leafList) {
+            // Se obtiene terminos del leaf
             Terms terms = leaf.reader().terms(fieldName);
-            if (terms == null) {
-                System.err.println("The field has no term vector");
-                System.exit(-1);
-            }
-            TermsEnum te = terms.iterator();
-            while (te.next() != null) {
-                if ((tmpDf = map.get(te.term().utf8ToString())) == null) {
-                    // If value had not been found before, introduce it
-                    map.put(te.term().utf8ToString(), te.docFreq());
-                } else {
-                    // If value had been found before, update its value adding to the total
-                    map.put(te.term().utf8ToString(), tmpDf + te.docFreq());
+            if (terms != null) {
+                TermsEnum te = terms.iterator();
+                // Se itera sobre los terminos
+                while (te.next() != null) {
+                    if ((tmpDf = map.get(te.term().utf8ToString())) == null) {
+                        // Si el valor no existía en el hashmap, se añade
+                        map.put(te.term().utf8ToString(), te.docFreq());
+                    } else {
+                        // Si el valor existía previamente, se suman las frecuencias
+                        map.put(te.term().utf8ToString(), tmpDf + te.docFreq());
+                    }
                 }
             }
+        }
+        if (map.size() == 0) {
+            System.err.println("The field has no term vector");
+            System.exit(-1);
         }
         return map;
     }
@@ -155,15 +167,17 @@ public class BestTermsInColl {
         ArrayList<TermInfo> freqs = new ArrayList<>();
         HashMap<String, Integer> map = getDfOfTermsInColl(reader, strField);
 
-        // Add each entry of the hashmap to the list of terms to then later sort them
+
+        // Añade cada elemento de hashmap a la lista para que se pueda ordenar
         if (rev) {
-            map.forEach((k, v) -> freqs.add(new TermInfo(k, v)));    // If rev is required, just add the total docFreq for each term
+            // Si se pide rev, solo se añade la frecuencia de documento del termino
+            map.forEach((k, v) -> freqs.add(new TermInfo(k, v)));
         } else {
-            // If not, calculate de idflog10 for each term
+            // Si no, se calcula el idflog10 del termino
             double totalDocs = reader.numDocs();
             map.forEach((k, v) -> freqs.add(new TermInfo(k, Math.log10(totalDocs / (double) v))));
         }
-        // Sort the frequencies list
+        // Ordena la lista de frecuencias
         Collections.sort(freqs);
         return freqs;
     }

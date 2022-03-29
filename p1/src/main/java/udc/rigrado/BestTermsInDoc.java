@@ -1,8 +1,6 @@
 package udc.rigrado;
 
 import org.apache.lucene.index.*;
-import org.apache.lucene.search.similarities.ClassicSimilarity;
-import org.apache.lucene.search.similarities.TFIDFSimilarity;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.IOUtils;
@@ -79,11 +77,21 @@ public class BestTermsInDoc implements AutoCloseable {
             System.exit(1);
         }
 
-        if (indexPath == null || top < 0 || docID < 0 || order == null || field == null) {
-            System.err.println("Usage: " + usage);
+        if (indexPath == null) {
+            System.err.println("An index path must be given");
             System.exit(1);
         }
 
+        if (field == null) {
+            System.err.println("A field must be specified");
+            System.exit(1);
+        }
+
+        if (top < 0 || docID < 0 || order == null) {
+            System.err.println("Usage: " + usage);
+            System.exit(1);
+        }
+        // Se instancia la clase y se llama el método
         try (BestTermsInDoc statsField = new BestTermsInDoc(indexPath, field, docID, top, order)) {
             statsField.findBestTerms(outputfile);
         }
@@ -102,13 +110,13 @@ public class BestTermsInDoc implements AutoCloseable {
             System.exit(-1);
         }
 
-        // Generate sorted terms arrayList
+        // Genera la lista de términos ya ordenada
         ArrayList<TermInfo> sortedTerms = getTermInfo(reader, field, order);
 
-        // Create variable where every line will be stored to be printed/written
+        // Crea la variable en  la que se va a guardar cada línea de print o escritura
         String stats = "Best terms in Document " + docID + " for field '" + field + "' sorted by " + order.name() + ":";
 
-        // Create output file if passed as argument
+        // Crea el output file pasado como argumento
         if (outputfile != null) {
             outputFile = new FileWriter(outputfile);
             try { outputFile.write(stats); }
@@ -118,6 +126,7 @@ public class BestTermsInDoc implements AutoCloseable {
             System.out.println(stats);
         }
 
+        // Se itera sobre los top N elementos de la lista de términos
         for (int i = 0; i < top; i++) {
             try {
                 stats = "\nNº "  + (i + 1) + ": " + getStats(sortedTerms.get(i));
@@ -172,6 +181,7 @@ public class BestTermsInDoc implements AutoCloseable {
     }
 
     ArrayList<TermInfo> getTermInfo(IndexReader reader, String strField, Order order) throws IOException {
+        // Obtiene el term vector del documento y el campo
         TermsEnum termVectors = reader.getTermVector(docID, strField).iterator();
         if (termVectors == null) {
             System.err.println("The field specified in the Document has no term vector");
@@ -179,19 +189,24 @@ public class BestTermsInDoc implements AutoCloseable {
         }
         PostingsEnum docEnums = null;
         ArrayList<TermInfo> freqs = new ArrayList<>();
-//        TFIDFSimilarity similarity = new ClassicSimilarity();
         BytesRef term;
 
+        // Itera sobre el term vector, calculando y almacenando df, tf e idf para cada uno
         while ((term = termVectors.next()) != null) {
             Term tmpterm = new Term(strField, termVectors.term());
             docEnums = termVectors.postings(docEnums, PostingsEnum.FREQS);
-            //Advance to document it has extracted the term vector from
+            // Avanza una posicion del posting para llegar al documento que se está analizando
             docEnums.nextDoc();
+            // Se obtiene document frquency
             float df = reader.docFreq(tmpterm);
-            float tf = docEnums.freq(); //similarity.tf(termVectors.totalTermFreq());
+            // Frecuencia de término para ese documento
+            float tf = docEnums.freq();
+            // idflog10 (inversa de frecuencia de documento log 10)
             double idf = Math.log10((double) reader.numDocs() / (double) df);
+            // Se añade toda la estructura a la lista de frecuencias
             freqs.add(new TermInfo(term.utf8ToString(), df, tf, idf, order));
         }
+        // Se ordena la lista
         Collections.sort(freqs);
         return freqs;
     }
