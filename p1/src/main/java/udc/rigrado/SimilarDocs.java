@@ -146,7 +146,7 @@ public class SimilarDocs implements AutoCloseable {
                     currentDoc = similarityList.get(i);
                     printSimilarity(currentDoc, i);
                 } catch (IndexOutOfBoundsException e) {
-                    System.out.println("\nNo more terms documents available for this collection");
+                    System.out.println("\nNo more documents available for this collection");
                     break;
                 }
             }
@@ -200,8 +200,6 @@ public class SimilarDocs implements AutoCloseable {
             docEnums = termVectors.postings(docEnums, PostingsEnum.FREQS);
             // Avanza una posicion del posting para llegar al documento que se está analizando
             docEnums.nextDoc();
-            // Se obtiene document frequency
-            // Frecuencia de término para ese documento
             switch (mode) {
                 case TF:
                     tmp = (double) docEnums.freq();
