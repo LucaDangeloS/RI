@@ -230,12 +230,14 @@ public class IndexFiles implements AutoCloseable {
         DirectoryStream<Path> directoryStream = Files.newDirectoryStream(docDir);
         ArrayList<IndexWriter> partialWriters = new ArrayList<>();
         IndexInfo ii = new IndexInfo(executor, update, this.properties);
+        boolean flag = false;
 
         // No se indexa nada
         if (depth == 0) return;
 
         for (final Path subpath : directoryStream) {
             if (Files.isDirectory(subpath)) {
+                flag = true;
                 final Runnable worker;
 
                 if (partialIndex) {
@@ -255,19 +257,21 @@ public class IndexFiles implements AutoCloseable {
         }
 
         /* Wait up to 1 minute to finish all the previously submitted jobs */
-        try {
-            executor.awaitTermination(60, TimeUnit.MINUTES);
-            executor.shutdownNow(); //garantee shutdown
-        } catch (final InterruptedException e) {
-            e.printStackTrace();
-            System.exit(-2);
-        }
-        if (partialIndex)
-            for (IndexWriter iw: partialWriters) {
-                iw.commit();
-                iw.close();
-                writer.addIndexes(iw.getDirectory());
+        if (flag) {
+            try {
+                executor.awaitTermination(60, TimeUnit.MINUTES);
+                executor.shutdownNow(); //garantee shutdown
+            } catch (final InterruptedException e) {
+                e.printStackTrace();
+                System.exit(-2);
             }
+            if (partialIndex)
+                for (IndexWriter iw : partialWriters) {
+                    iw.commit();
+                    iw.close();
+                    writer.addIndexes(iw.getDirectory());
+                }
+        }
 
         System.out.println("All threads finished");
     }

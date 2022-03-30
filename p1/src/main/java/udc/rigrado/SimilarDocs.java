@@ -8,6 +8,7 @@ import org.apache.lucene.util.IOUtils;
 import javax.print.Doc;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.text.DecimalFormat;
 import java.util.*;
 
 public class SimilarDocs implements AutoCloseable {
@@ -140,11 +141,13 @@ public class SimilarDocs implements AutoCloseable {
             String stats = "Doc ID: " + docInfo.docID + "\nPath: " + docInfo.path + "\n";
             stats += "Most similar documents in Collection for field '" + field + "' sorted by " + rep.name() + ":\n";
             System.out.println(stats);
+            DecimalFormat df = new DecimalFormat();
+            df.setMaximumFractionDigits(2);
 
             for (int i = 0; i < top; i++) {
                 try {
                     currentDoc = similarityList.get(i);
-                    printSimilarity(currentDoc, i);
+                        printSimilarity(currentDoc, i, df);
                 } catch (IndexOutOfBoundsException e) {
                     System.out.println("\nNo more documents available for this collection");
                     break;
@@ -217,9 +220,9 @@ public class SimilarDocs implements AutoCloseable {
         return values;
     }
 
-    private static void printSimilarity(DocInfo currentDoc, int i) {
+    private static void printSimilarity(DocInfo currentDoc, int i, DecimalFormat df) {
         String stats = "\nNº "  + (i + 1) + ":";
-        stats += "\n\tSimilarity: " + currentDoc.similarity;
+        stats += "\n\tSimilarity: " + df.format(currentDoc.similarity*100)+"%";
         stats += "\n\tDoc ID: " + currentDoc.docID;
         stats += "\n\tPath: " + currentDoc.path + "\n";
         System.out.println(stats);
