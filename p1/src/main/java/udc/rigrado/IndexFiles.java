@@ -312,6 +312,7 @@ public class IndexFiles implements AutoCloseable {
         void indexDoc(IndexWriter writer, Path file) throws IOException {
             try (InputStream stream = Files.newInputStream(file)) {
                 // make a new, empty document
+                String str = new String(stream.readAllBytes());
                 Document doc = new Document();
                 OpenMode openmode = writer.getConfig().getOpenMode();
 
@@ -345,9 +346,8 @@ public class IndexFiles implements AutoCloseable {
                 doc.add(new StringField("lastModifiedTimeLucene",
                         DateTools.dateToString(new Date(lastModifiedTime.toMillis()), DateTools.Resolution.SECOND), Field.Store.YES));
                 doc.add(new TextField("contents",
-                        new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))));
-                doc.add(new Field("contentsStored",
-                        new String(stream.readAllBytes(), StandardCharsets.UTF_8), TYPE_STORED_INDEXED));
+                        str, Field.Store.NO));
+                doc.add(new Field("contentsStored", str, TYPE_STORED_INDEXED));
                 doc.add(new StringField("hostname", InetAddress.getLocalHost().getHostName(), Field.Store.YES));
                 doc.add(new StringField("thread", Thread.currentThread().getName(), Field.Store.YES));
                 doc.add(new StringField("type", filetype, Field.Store.YES));
