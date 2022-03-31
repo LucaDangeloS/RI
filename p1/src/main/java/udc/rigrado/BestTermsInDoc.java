@@ -35,9 +35,9 @@ public class BestTermsInDoc implements AutoCloseable {
     }
 
     public static void main(String[] args) throws Exception {
-        String usage = "java StatsField"
+        String usage = "java BestTermInDoc"
                 + " [-index INDEX_PATH] [-docID D] [-field FIELD_NAME]"
-                + " [-top N] [-order tf | df | idf | tfxidf] [-outputFile FILE]\n"
+                + " [-top N] [-order tf | df | idf | tfxidf] [-outputfile FILE]\n"
                 + "N and D should be positive integers.\n";
         String indexPath = null;
         Order order = null;

@@ -263,7 +263,7 @@ public class DocClusters implements AutoCloseable{
     }
 }
 
-//Estas clases de abajo pertenecen a 
+//Estas clases de abajo pertenecen a https://github.com/xetorthio/kmeans/tree/master/src
 
 class Punto {
     private Double[] data;
@@ -324,7 +324,7 @@ class Punto {
         return true;
     }
 }
-//
+
  class Cluster {
     private List<Punto> puntos = new ArrayList<Punto>();
     private Punto centroide;

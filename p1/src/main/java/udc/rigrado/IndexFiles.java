@@ -77,7 +77,7 @@ public class IndexFiles implements AutoCloseable {
     /** Index all text files under a directory. */
     public static void main(String[] args) throws Exception {
         String usage = "java IndexFiles"
-                + " [-index INDEX_PATH] [-docs DOCS_PATH] [-update] [-numThreads NUM_THREADS] [-openmode append | create | create_or_append]\n\n"
+                + " [-index INDEX_PATH] [-docs DOCS_PATH] [-update] [-numThreads NUM_THREADS] [-openmode append | create | create_or_append] [-partialIndex] [-deep N]\n\n"
                 + "This indexes the documents in DOCS_PATH, creating a Lucene index\n";
         String indexPath = "index";
         String docsPath = null;
