@@ -354,31 +354,39 @@ public class IndexFiles implements AutoCloseable {
                 doc.add(new StringField("SizeKBStored", String.valueOf(size), Field.Store.YES));
                 doc.add(new FloatPoint("sizeKB", size));
 
-                if (info.topLines > 0) { //TODO preguntar si tienen ese nombre
-                    Stream<String> lines = Files.lines(file);
-                    String linesToAdd;
-                    long len = lines.count();
-                    lines = Files.lines(file);
-                    if (len <= info.topLines)
-                        linesToAdd = lines.collect(Collectors.joining("\n"));
-                    else {
-                        linesToAdd = lines.limit(info.topLines).collect(Collectors.joining("\n"));
+                if (info.topLines > 0) {
+                    try {
+                        Stream<String> lines = Files.lines(file);
+                        String linesToAdd;
+                        long len = lines.count();
+                        lines = Files.lines(file);
+                        if (len <= info.topLines)
+                            linesToAdd = lines.collect(Collectors.joining("\n"));
+                        else {
+                            linesToAdd = lines.limit(info.topLines).collect(Collectors.joining("\n"));
+                        }
+                        doc.add(new TextField("onlyTopLines", linesToAdd, Field.Store.YES));
+                        lines.close();
+                    } catch (Exception e) {
+                        System.err.println("Error reading file: " + file);
                     }
-                    doc.add(new TextField("onlyTopLines", linesToAdd, Field.Store.YES));
-                    lines.close();
                 }
                 if (info.bottomLines > 0) {
-                    Stream<String> lines = Files.lines(file);
-                    String lastLines;
-                    long len = lines.count();
-                    lines = Files.lines(file);
-                    if (len <= info.bottomLines) {
-                        lastLines = lines.collect(Collectors.joining("\n"));
-                    } else {
-                        lastLines = lines.skip(len - info.bottomLines).collect(Collectors.joining("\n"));
+                    try {
+                        Stream<String> lines = Files.lines(file);
+                        String lastLines;
+                        long len = lines.count();
+                        lines = Files.lines(file);
+                        if (len <= info.bottomLines) {
+                            lastLines = lines.collect(Collectors.joining("\n"));
+                        } else {
+                            lastLines = lines.skip(len - info.bottomLines).collect(Collectors.joining("\n"));
+                        }
+                        doc.add(new TextField("onlyBottomLines", lastLines, Field.Store.YES));
+                        lines.close();
+                    } catch (Exception e) {
+                        System.err.println("Error reading file: " + file);
                     }
-                    doc.add(new TextField("onlyBottomLines", lastLines, Field.Store.YES));
-                    lines.close();
                 }
 
                 switch (openmode){
@@ -388,11 +396,6 @@ public class IndexFiles implements AutoCloseable {
                         break;
                     case APPEND:
                         if (info.update) {
-//                            IndexSearcher searcher = IndexSearcher();
-//                            TopDocs results = searcher.search(new TermQuery(new Term("path", file.toString())), 1);
-//                            if (results.totalHits > 0){
-//                                writer.updateDocument(new Term("path", file.toString()), doc);
-//                            }
                             System.out.println("Updating " + file);
                             writer.updateDocument(new Term("path", file.toString()), doc);
                         } else {
@@ -431,9 +434,13 @@ public class IndexFiles implements AutoCloseable {
                         else {
                             String file_str = subpath.getFileName().toString();
                             int i = file_str.lastIndexOf(".");
-                            String extension = file_str.substring(i);
-                            if (info.fileTypesList.contains(extension))
+                            try {
+                                String extension = file_str.substring(i);
+                                if (info.fileTypesList.contains(extension))
+                                    indexDoc(writer, subpath);
+                            } catch (StringIndexOutOfBoundsException e) {
                                 indexDoc(writer, subpath);
+                            }
                         }
                     }
                 }
@@ -445,6 +452,9 @@ public class IndexFiles implements AutoCloseable {
             } catch (IOException e) {
                 decrementThreadCount();
                 e.printStackTrace();
+                if (readThreadCount() == 0) {
+                    executor.shutdown();
+                }
             }
         }
     }

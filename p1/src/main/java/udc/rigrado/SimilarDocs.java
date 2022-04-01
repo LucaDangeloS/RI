@@ -25,7 +25,7 @@ public class SimilarDocs implements AutoCloseable {
         this.baseTermVector = baseTermVector;
         this.comparingDocID = docID;
     }
-    public static double cosineSimilarity(Vector<Double> vec1, Vector<Double> vec2) {
+    public static Double cosineSimilarity(Vector<Double> vec1, Vector<Double> vec2) {
         double dotProd = 0.0;
         double sumSquare1 = 0.0;
         double sumSquare2 = 0.0;
@@ -38,7 +38,10 @@ public class SimilarDocs implements AutoCloseable {
             sumSquare1 += Math.pow(v1, 2);
             sumSquare2 += Math.pow(v2, 2);
         }
-        return dotProd / (Math.sqrt(sumSquare1 * sumSquare2));
+        double denom = (Math.sqrt(sumSquare1 * sumSquare2));
+        if (denom == 0) {
+            return null;
+        } else return dotProd / denom;
     }
 
     private static class DocInfo implements Comparable<DocInfo> {
@@ -126,7 +129,10 @@ public class SimilarDocs implements AutoCloseable {
                 if (i != sd.comparingDocID) {
                     map2 = sd.getTermValuesForDoc(reader, field, rep, i);
                     comparingVector = new Vector<>(map2.values());
-                    similarityList.add(new DocInfo(i, reader.document(i).get("path"), cosineSimilarity(docVector, comparingVector)));
+                    Double similarity = cosineSimilarity(docVector, comparingVector);
+                    if (similarity != null) {
+                        similarityList.add(new DocInfo(i, reader.document(i).get("path"), similarity));
+                    }
                 }
             }
             System.out.println();
@@ -188,13 +194,13 @@ public class SimilarDocs implements AutoCloseable {
 
     private LinkedHashMap<String, Double> getTermValuesForDoc(IndexReader reader, String strField, RepEnum mode, int docID) throws IOException {
         // Obtiene el term vector del documento y el campo
-        TermsEnum termVectors = reader.getTermVector(docID, strField).iterator();
-        if (termVectors == null) {
-            System.err.println("The field specified in the Document has no term vector");
-            System.exit(-1);
-        }
-        PostingsEnum docEnums = null;
+        Terms terms = reader.getTermVector(docID, strField);
         LinkedHashMap<String, Double> values = new LinkedHashMap<>(baseTermVector);
+        if (terms == null) {
+            return values;
+        }
+        TermsEnum termVectors = terms.iterator();
+        PostingsEnum docEnums = null;
         BytesRef term;
         Double tmp = null;
 
