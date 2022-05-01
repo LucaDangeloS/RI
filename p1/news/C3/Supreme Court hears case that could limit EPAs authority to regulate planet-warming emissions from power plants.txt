@@ -1,0 +1,35 @@
+By Ella Nilsen, CNN
+Updated: Mon, 28 Feb 2022 19:48:29 GMT
+Source: CNN
+
+The Supreme Court on Monday heard what could be one of the most consequential cases for climate change and clean air in decades, with Republican attorneys general and coal companies asking the court to strip the Environmental Protection Agency of its authority to regulate planet-warming gas emissions from power plants. 
+During oral arguments for West Virginia v. EPA, which lasted about two hours, not all of the court's conservative majority appeared to be aligned with the petitioners, though some entertained the idea that the authority should be turned back to Congress. 
+
+The hearing came on the same day that a major UN-backed climate change report showed the impacts of burning fossil fuels were larger than previously thought, and that society is running out of ways to adapt to the crisis. 
+Justices on the conservative wing of the court focused their questions on legal theories being argued by state attorneys general, including the scope of the Clean Air Act, which gives the EPA authority to regulate air pollution, and the role of the Major Questions Doctrine, which states that questions of significant political or economic importance must be decided by Congress.  
+West Virginia Solicitor General Lindsay See argued that the rise of renewable energy like wind and solar powering electricity is "a major question, because it allows EPA to determine what the power sector as a whole should look like and who can be in it." 
+On the other side, US Solicitor General Elizabeth Prelogar argued the petitioners' case should be dismissed because there is no federal regulation for power plants on the books right now -- with both the Obama-era Clean Power Plan and the Trump-era Affordable Clean Energy rule dead. President Joe Biden's EPA has not yet issued a new rule.  
+
+Prelogar was joined by Beth Brinkmann, an attorney representing power companies who want the EPA to keep its regulating authority. Both argued the court should not speculate on potential regulations, nor restrict the EPA from issuing them in the future.  
+The three liberal justices on the court seemed to agree with this idea in their line of questioning, which emphasized how big a shift it would be to strip the EPA's authority, both for the government and the power industry.  
+"This is really a step further than anything we have said before," Justice Sonia Sotomayor said. "All of our other cases, whether its regulation of tobacco, or regulation of evictions under major questions doctrine, have not addressed the 'how.' Now ... you want us to look at the 'how.'" 
+Conservatives question scope of Clean Air Act
+Due to their current 6-3 majority on the US Supreme Court, there's no doubt the court's conservatives will be the important votes in this case. But some of their questions cast doubt that they would necessarily agree with the petitioners.  
+Justice Amy Coney Barrett pointed out that unlike in past cases where there's been a legitimate question of whether an agency is operating outside of its boundaries, the EPA is indeed charged with regulating greenhouse gas emissions -- something that has been reaffirmed by the Supreme Court twice. 
+
+"Here, thinking about EPA regulating greenhouse gases, there's a match between the regulation and the agency's wheelhouse, right?" Barrett asked coal company attorney Yaakov Roth. "You're saying when you look at the scheme, this is a really big deal. That's a little bit different than a mismatch between the subject of the regulation and what the agency does." 
+Similarly, Justice Clarence Thomas seemed skeptical about the arguments that power companies should only have to retrofit their plants to lower emissions "inside the fence" -- including coal scrubbers or carbon capture -- rather than pushing them to add cleaner sources of energy. 
+"I don't know how you can draw such clean distinctions," between inside and outside the fence, Thomas told Roth. "It would seem as though EPA could regulate the source in a way that actually requires change in the mix of energy generation. That for example, the cost of running a facility is so high that you begin to change your generation sources say from coal to natural gas, or natural gas to solar." 
+
+Other conservatives, including Justice Samuel Alito, seemed more inclined to lean into the petitioners' argument -- asking the power utility attorney how far an agency would have to go in wielding its power before she considered it a major question.  
+Alito questioned whether considering the impacts of climate change could mean the EPA has very few limits on regulations, asking Prelogar if the agency could extend its power by regulating emissions from single-family homes -- something she said it is unable to do. 
+"What weight do you assign to the effects of climate change, which some people believe is matter of civilizational survival, and the costs and the effect on jobs?" Alito said. "I really don't see what the concrete limitations are in any of what you said if you take the arguments about climate change seriously, and this is a matter of survival." 
+Justice Neil Gorsuch asked few questions during the hearing, but noted that the EPA's case was a "strong argument" that the states are not harmed given there's no rule in place. 
+Liberal justices seemed skeptical  
+The three liberal justices, Elena Kagan, Stephen Breyer, and Sotomayor appeared skeptical of petitioners' arguments. 
+Breyer questioned See on how delegating EPA's authority to Congress would work on a practical level.
+"I had thought we have a whole US Code filled with delegations to different agencies, and many of those words are fairly technical," Breyer said. "Is it a minor matter having to do with administration that they're more familiar with? Is it something that's going to change the whole United States of America -- that cuts the other way?" 
+Kagan asked why generation shifting -- or moving to generate electricity from renewable sources -- shouldn't be allowed by the EPA if it is a cheaper alternative for power companies and gives them flexibility. 
+"The way the grid works -- it prefers cheaper methods," Kagan said. "And so EPA could come out with a rule that is plant by plant but makes coal plants hugely more expensive. This is essentially what the market is already doing, but EPA could do it faster." 
+Kagan pointed to Thomas's earlier argument, saying that inside and outside the fence retrofits to coal plants would have the same end result and therefore didn't have much of a difference. 
+"This system, it's actually going to cost less for everybody than if we did something like what you're talking about," Kagan said. "So why shouldn't EPA have that ability? Why shouldn't the states have that ability?" 

@@ -1,0 +1,29 @@
+By Katelyn Polantz and Evan Perez, CNN
+Updated: Tue, 15 Feb 2022 12:41:13 GMT
+Source: CNN
+
+Special counsel John Durham accused a lawyer for the Democrats of sharing with the CIA in 2017 internet data purported to show Russian-made phones being used in the vicinity of the White House complex, as part of a broader effort to raise the intelligence community's suspicions of Donald Trump's ties to Russia shortly after he took office.
+The accusation -- which Durham couched in vague, technical language in a court filing late Friday -- has been seized upon by Trump and his supporters, who claim the former President was subjected to a smear campaign.
+Durham says in the filing that Michael Sussmann, the Democratic lawyer, spoke about internet data related to Trump in a meeting with a federal agency, which sources say was the CIA, more than five years ago. Sussmann claimed the information "demonstrated that Trump and/or his associates were using supposedly rare, Russian-made wireless phones in the vicinity of the White House and other locations," according to the filing. 
+Durham's office said it found nothing to support the allegation. The special counsel also noted that the data showed a Russian phone provider connection involving the Executive Office of the President "during the Obama administration and years before Trump took office."
+The data was compiled by a tech firm that had special access to the purportedly suspicious internet data through an "arrangement" with the US government, and that firm was in touch with Sussmann, according to the filing.
+An executive at the tech company, Rodney Joffe, and his associates exploited this arrangement by mining domain name system traffic associated with the Executive Office of the President and other data "for the purpose of gathering derogatory information about Donald Trump," Durham's prosecutors wrote. 
+Joffe is not charged with any crime.
+A spokesperson for Joffe said he "is an apolitical internet security expert with decades of service to the U.S. Government who has never worked for a political party, and who legally provided access to DNS data obtained from a private client that separately was providing DNS services to the Executive Office of the President (EOP)."
+"Upon identifying DNS queries from Russian-made Yota phones in proximity to the Trump campaign and the EOP, respected cyber-security researchers were deeply concerned about the anomalies they found in the data and prepared a report of their findings, which was subsequently shared with the CIA," the spokesperson added later in the statement.
+Sussmann last fall pleaded not guilty to a charge of lying to the FBI about a separate meeting. Defense attorneys for Sussmann called Durham's recent statements in court about the internet data "misleading." 
+"The Special Counsel has again made a filing in this case that unnecessarily includes prejudicial -- and false -- allegations that are irrelevant ... and are plainly intended to politicize this case, inflame media coverage, and taint the jury pool," they wrote in a court filing Monday night.
+They said Durham had a fact wrong: that Sussmann told the CIA about internet data related to Russian phones being used around the White House before Trump was President, and not from after he took office.
+Durham's most recent assertions in court about Sussmann implied that the CIA heard from him about Russian phones being used around the White House after Trump became President as a way to raise the intelligence communities' suspicions about Trump.
+But Sussmann says that isn't so.
+"Although the Special Counsel implies that in Mr. Sussmann's February 9, 2017 meeting, he provided Agency-2 with (Executive Office of the President) data from after Mr. Trump took office, the Special Counsel is well aware that the data provided to Agency-2 pertained only to the period of time before Mr. Trump took office, when Barack Obama was President," Sussmann's lawyers wrote.
+Sussmann's team added that the reasons for concern that Sussmann took to the CIA about Trump and Russia weren't intentionally manipulative.
+Durham's office says in the filing that he plans to use the information in it at Sussmann's trial. Durham's office declined to comment further.
+Right-wing media outlets and Republican politicians, including Trump, are citing Durham's court filing to accuse Hillary Clinton's 2016 campaign of spying on Trump because of the use of the data.
+But Durham's court filing doesn't allege that the pro-Clinton researchers' use of internet data meant that there was any eavesdropping on content of communications.
+Durham has used the Sussmann case to more broadly draw attention to the role of unsavory political opposition research in the 2016 election.
+Sussmann is charged with making a false statement to the FBI about his representation of the Democrats, when he shared data that pro-Clinton researchers believed linked Trump Organization servers to a Russian bank in 2016.
+The five-year statute of limitations appears to have passed for Durham to accuse Sussmann of any wrongdoing related to his meeting with the CIA. Passing along information from researchers to intelligence officials for further investigation is not uncommon and isn't necessarily a crime.
+The new details were included in a more mundane request to have Sussmann agree to waive any conflict-of-interest issues that could arise because his lawyers have represented others connected to the investigation in the past.
+Sussmann is set to go to trial in a few months, and the case is largely expected to be based on the testimony of former FBI General Counsel James Baker, who has made shaky statements in testimony over the past few years about his memory of his interactions with Sussmann. 
+This story has been updated with additional details and reaction.

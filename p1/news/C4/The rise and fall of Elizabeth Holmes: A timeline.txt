@@ -1,0 +1,83 @@
+By Sara Ashley O'Brien, CNN Business
+Updated: Tue, 04 Jan 2022 16:00:54 GMT
+Source: CNN
+
+More than three years after Elizabeth Holmes was first indicted and nearly four months after her trial kicked off, the founder and former CEO of failed blood testing startup Theranos was found guilty on four out of 11 federal fraud and conspiracy charges.
+The verdict comes after a stunning downfall that saw Holmes, once hailed as the next Steve Jobs, go from being a tech industry icon to being a rare Silicon Valley entrepreneur on trial for fraud. 
+A Stanford University dropout, Holmes -- inspired by her own fear of needles -- started the company at the age of 19, with a mission of creating a cheaper, more efficient alternative to a traditional blood test. Theranos promised patients the ability to test for conditions like cancer and diabetes with just a few drops of blood. She attracted hundreds of millions of dollars in funding, a board of well-known political figures, and key retail partners.
+But a Wall Street Journal investigation poked holes into Theranos' testing and technology, and the dominoes fell from there. Holmes and her former business partner, Ramesh "Sunny" Balwani, were charged in 2018 by the US government with multiple counts of wire fraud and conspiracy to commit wire fraud. (Both pleaded not guilty.) 
+Here are the highlights of the rise and fall of Elizabeth Holmes and Theranos.
+March 2004: Holmes drops out of Stanford to pursue Theranos
+Holmes, a Stanford University sophomore studying chemical engineering, drops out of school to pursue her startup, Theranos, which she founded in 2003 at age 19. The name is a combination of the words "therapy" and "diagnosis." 
+September 2009: Ramesh "Sunny" Balwani joins Theranos as Holmes' right-hand man
+Balwani joins as chief operating officer and president of the startup. Balwani, nearly 20 years her senior, met Holmes in 2002 on a trip to Beijing through Stanford University. The two are later revealed to be romantically involved.
+September 2013: Holmes opens up about Theranos; announces Walgreens partnership
+A decade after first starting the company, Holmes takes the lid off Theranos and courts media attention the same month that Theranos and Walgreens announce they've struck up a long-term partnership. The first Theranos Wellness Center location opens in a Walgreens in Palo Alto where consumers can access Theranos' blood test. 
+The original plan had been to make Theranos' testing available at Walgreens locations nationwide.
+September 2014: Holmes named one of the richest women in America by Forbes
+Holmes is named to the magazine's American billionaire list with the outlet reporting she owns a 50% stake in the startup, pinning her personal wealth at $4.5 billion. 
+
+December 2014: Theranos has raised $400 million
+Theranos has raised more than $400 million, according to a profile of the company and Holmes by The New Yorker. It counts Oracle's Larry Ellison among its investors. 
+July 2015: Theranos gets FDA approval for Herpes test
+The FDA clears Theranos to use of its proprietary tiny blood-collection vials to finger stick blood test for herpes simplex 1 virus -- its first and only approval for a diagnostic test. 
+October 2015: Theranos is the subject of a Wall Street Journal investigation; Holmes hits back
+The Wall Street Journal reports Theranos is using its proprietary technique on only a small number of the 240 tests it performs, and that the vast majority of its tests are done with traditional vials of blood drawn from the arm, not the "few drops" taken by a finger prick. In response, Theranos defends its testing practices, calling the Journal's reporting "factually and scientifically erroneous."
+A day later, Theranos halts the use of its blood-collection vials for all but the herpes test due to pressures from the FDA. (Later that month, the FDA released two heavily redacted reports citing 14 concerns, including calling the company's proprietary vial an "uncleared medical device.") 
+One week after the Journal report, Holmes is interviewed on-stage at the outlet's conference in Laguna Beach. "We know what we're doing and we're very proud of it," she says.
+Amid the criticism, Theranos reportedly shakes up its board of directors, eliminating Henry Kissinger and George Shultz as directors while moving them to a new board of counselors; the company also forms a separate medical board.
+November 2015: Theranos and Safeway partnership falls short
+Safeway, which invested $350 million into building out clinics in hundreds of its supermarkets to eventually offer Theranos blood tests, reportedly looks to dissolve its relationship with the company before it ever offered its services.
+January 2016: Federal regulators take issue with Theranos' California lab; Walgreens pulls back
+Centers for Medicare and Medicaid Services (CMS) sends Theranos a letter saying its California lab has failed to comply with federal standards and that patients are in "immediate jeopardy." It gives the company 10 days to address the issues.
+In response, Walgreens says it will not send any lab tests to Theranos' California lab for analysis and suspends Theranos services at its Palo Alto Walgreens location.
+March 2016: CMS threatens to ban Holmes, Balwani from lab business
+CMS threatens to ban Holmes and Balwani from the laboratory business for two years after the company allegedly failed to fix problems at its California lab. Theranos says that's a "worst case scenario." 
+May 2016: Balwani steps down; Theranos voids two years of blood tests
+Balwani departs. The company also adds three new board members as part of the restructuring: Fabrizio Bonanni, a former executive vice president of biotech firm Amgen, former CDC director William Foege, and former Wells Fargo CEO Richard Kovacevich.
+Theranos voids two years of blood test results from its proprietary testing devices, correcting tens of thousands of blood-test reports, the Journal reports.
+June 2016: Holmes net worth revised to $0; Theranos loses its largest retail partner
+Forbes revises its estimate of Holmes' net worth from $4.5 billion to $0. The magazine also lowers its valuation for the company from $9 billion to $800 million.
+Walgreens, once Theranos' largest retail partner, ends its partnership with the company and says it will close all 40 Theranos Wellness Centers. 
+July 2016: Holmes is banned from running labs for two years
+CMS revokes Theranos' license to operate its California lab and bans Holmes from running a blood-testing lab for two years.
+August 2016: The company unveils 'miniLab' device
+Holmes tries to move past recent setbacks by unveiling a mini testing laboratory, called miniLab, at a conference for the American Association for Clinical Chemistry. In selling the device, versus operating its own clinics, Theranos seeks to effectively side-step CMS sanctions, which don't prohibit research and development.
+October 2016: Theranos investor sues the company; Theranos downsizes
+Theranos investor Partner Fund Management sues the company for $96.1 million, the amount it sunk into the company in February 2014, plus damages. It accuses the company of securities fraud. Theranos and Partner Fund Management settled in May, 2017, for an undisclosed amount.
+The company also lays off 340 employees as it closes clinical labs and wellness centers as it attempts to pivot and focus on the miniLab.
+November 2016: Walgreens sues Theranos
+Walgreens sues the blood testing startup for breach of contract. Walgreens sought to recover the $140 million it poured into the company. The lawsuit was settled August, 2017.
+January 2017: More layoffs, followed by a failed lab inspection
+Theranos downsizes its workforce yet again following the increased scrutiny into its operations, laying off approximately 155 employees or about 41% of staffers.
+The Wall Street Journal reports that Theranos failed a second regulatory lab inspection in September, and that the company was closing its last blood testing location as a result.
+April 2017: Theranos settles with CMS, and Arizona AG
+Theranos settles with the CMS, agreeing to pay $30,000 and to not to own or operate any clinical labs for two years.
+Theranos also settles with the Arizona Attorney General Mark Brnovich over allegations that its advertisements misrepresented the method, accuracy, and reliability of its blood testing and that the company was out of compliance with federal regulations governing clinical lab testing. Theranos agrees to pay $4.65 million back to its Arizona customers as part of a settlement deal.
+March 2018: Holmes charged with massive fraud
+The SEC charges Holmes and Balwani with a "massive fraud" involving more than $700 million from investors through an "elaborate, years-long fraud in which they exaggerated or made false statements about the company's technology, business, and financial performance." 
+The SEC alleges Holmes and Balwani knew that Theranos' proprietary analyzer could perform only 12 of the 200 tests it published on its patient testing menu.
+Theranos and Holmes agree to resolve the claims against them, and Holmes gives up control of the company and much of her stake in it. Balwani, however, is fighting the charges, with his attorney saying he "accurately represented Theranos to investors to the best of his ability."
+May 2018: "Bad Blood" 
+Reporter John Carreyrou, who first broke open the story of Theranos for the Wall Street Journal, publishes "Bad Blood," a definitive look at what happened inside the disgraced company. Director Adam McKay (who directed "The Big Short") secures the rights to make the film, starring Jennifer Lawrence as Holmes, by the same name.
+June 2018: Holmes and Balwani indicted on criminal fraud charges
+Holmes and Balwani are indicted on federal wire fraud charges over allegedly engaging in a multi-million dollar scheme to defraud investors, as well as a scheme to defraud doctors and patients. Both have pleaded not guilty.
+Minutes before the charges were made public, Theranos announced that Holmes has stepped down as CEO. The company's general counsel, David Taylor, takes over as CEO. Holmes remains chair of the company's board.
+
+September 2018: Theranos to dissolve
+Taylor emails shareholders that Theranos will dissolve, according to a report from The Wall Street Journal. Taylor said more than 80 potential buyers were not interested in a sale. "We are now out of time," Taylor wrote.
+March 2019: Theranos gets the documentary treatment
+Alex Gibney, the prolific documentary filmmaker behind "Dirty Money," "Enron: The Smartest Guys in the Room," and "The Armstrong Lie," debuts "The Inventor" on HBO, following the rise and fall of Theranos.
+September 2020: Holmes' possible defense strategy comes to light
+A new court document reveals Holmes may seek a "mental disease" defense in her criminal fraud trial. Later, in August 2021, unsealed court documents reveal Holmes is likely to claim she was the victim of a decade-long abusive relationship with Balwani. The allegations led to the severing of their trials. His trial is slated to begin in 2022.
+December 2020: Holmes' criminal trial delayed til 2021
+Initially set to begin in July 2020, Holmes' criminal trial is further delayed til July 2021 due to the coronavirus pandemic. 
+March 2021: Holmes' pregnancy further delays trial
+News surfaces that Holmes' is expecting her first child, once more further delaying her criminal trial. Holmes' counsel advised the US government that Holmes is due in July 2021, a court document revealed. She gave birth in July.
+
+August 2021: Holmes' criminal trial begins with jury selection
+More than 80 potential jurors are brought into a San Jose courtroom for questioning over the course of two days to determine if they are fit to serve as impartial, fair jurors for the criminal trial of Holmes.  A jury of seven men and five women is selected, with five alternatives.
+December 2021: Jury begins deliberating her fate
+After three months of testimony from 32 witnesses, the criminal fraud case of Theranos founder Elizabeth Holmes makes its way to the jury of eight men and four women who will decide her fate. The jury would go on to deliberate for more than 50 hours before returning a verdict.
+January 2022: Holmes found guilty on four of 11 federal charges
+Holmes is found guilty of one count of conspiracy to defraud investors as well as three wire fraud counts tied to specific investors. She is found not guilty on three additional charges concerning defrauding patients and one charge of conspiracy to defraud patients. The jury returns no verdict on three of the charges concerning defrauding investors. Holmes faces up to 20 years in prison as well as a fine of $250,000 plus restitution for each count.

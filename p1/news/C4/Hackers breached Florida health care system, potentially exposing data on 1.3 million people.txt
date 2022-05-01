@@ -1,0 +1,13 @@
+By Sean Lyngaas, CNN
+Updated: Tue, 04 Jan 2022 19:07:21 GMT
+Source: CNN
+
+Hackers breached the computer networks of a southeast Florida health care system in October and may have accessed sensitive personal and financial information on over 1.3 million people, the health care system announced this week. 
+Social Security numbers, patient medical history and bank account information are among the data that have been exposed in the breach of Broward Health, a network of over 30 health care facilities serving patients across roughly 2 million-person Broward County, Florida, according to a notice the health care provider filed with the Office of the Maine Attorney General.
+About 470 of the data breach victims live in Maine. Like other states, Maine law requires organizations that hold state residents' personal data to file a disclosure when they've been hacked.
+It is just one of numerous cyber incidents that have rattled the health sector during the pandemic, as cybercriminals have not let up in stealing data from hospitals and trying to profit from it. A ransomware attack on the Los Angeles chapter of Planned Parenthood in October compromised the personal information of about 400,000 patients.
+In the case of Broward Health, the incident did not appear to involve ransomware. Broward Health spokesperson Jennifer Smith told CNN in an email that the hackers did not make any ransom demand and that no ransom was paid. 
+"Patient care was not disrupted or impacted at any time during or following this incident," Smith said.
+Mark Krotoski, who is listed as an attorney for Broward Health in the breach notice, did not immediately respond to a request for comment. 
+The intruders accessed Broward Health's computer networks via a "third-party medical provider," according to the breach notice, an incident that highlights the exposure that hospitals and other organizations have to hackers via their supply chains. 
+"This personal information was exfiltrated, or removed, from Broward Health's systems, however, there is no evidence the information was actually misused by the intruder," the breach notice says.

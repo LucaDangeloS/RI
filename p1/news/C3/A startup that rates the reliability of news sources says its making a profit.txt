@@ -1,0 +1,31 @@
+By Brian Stelter, CNN Business
+Updated: Sun, 16 Jan 2022 22:34:36 GMT
+Source: CNN Business
+
+NewsGuard, a four-year-old startup that scans the web and rates the reliability of news sources, says its own business is reliable enough to turn a profit.
+The company more than doubled its revenue in 2021 versus the year before, thanks to licensing deals with advertisers and other firms that use its ratings.
+NewsGuard is now expanding into new areas, such as rating individual television shows, and new markets, including Canada, co-CEOs Steven Brill and Gordon Crovitz said in a joint interview.
+
+ 
+"To the degree that we can empower people with more information about which sources are trustworthy and to the degree that we can help advertisers stop subsidizing misinformation on the internet, we think we can make a real contribution to the news environment and to increasing trust in sources that deserve trust," Crovitz said.
+CNN Business reviewed the company's profit and loss statements and Brill and Crovitz's end of the year report to the NewsGuard board. The documents show that NewsGuard "began to break into the black in 2021," as the pair wrote, and is on a sustainable footing for 2022. The executives said they expect to be profitable in all four quarters of the year.
+"We think it's important that we did this as a for-profit business that can be viable, that doesn't have to depend on, you know, the kindness of strangers," Brill said. "My own view is that that's the path that journalism needs to take — to figure out business models that work."
+When the company was founded in 2018, Axios reported that NewsGuard had raised $6 million from investors.
+The mission hasn't changed since then: To evaluate sources for trustworthiness and give people tools to navigate the information universe. 
+Some of NewsGuard's nearly 40 staffers comb through websites, apply the same apolitical criteria to each outlet, and produce "nutrition labels." The criteria include clearly labeled advertising, a dearth of "deceptive headlines," a corrections policy and contact information. 
+Although there are many quibbles with specific rulings about certain sites, the results are directionally reliable, distinguishing global newsrooms that try to report fairly from fly-by-night sites that publish propaganda with no regard for reality.
+
+Brill said NewsGuard was created "to do what librarians do, which is explain to people something about the reliability and trustworthiness and background of those who are feeding them the news."
+He and Crovitz pointed out that almost 40% of the sites scrutinized by NewsGuard to date have received a red rating -- the equivalent of a red traffic light for a driver. 
+"That sounds like we're pretty strict," Brill said, but "in fact, you have to be really, really bad to get a red." 
+Many low-quality news sites receive relatively low scores from NewsGuard's analysts, but are still green overall. 
+"What's really shocked us, since we started the company, is just the proliferation, particularly around health care, of hoax sites that are really in it for the money. They're in it for the ad revenue," Brill said.
+With that in mind, NewsGuard has established several different lines of business. Ad agencies and advertisers tap into the company's findings to make sure they're not accidentally sponsoring websites full of spam and smears.
+"You have drug companies, you know, vaccine companies, whose ads are ending up on health care hoax sites," Brill said, and NewsGuard offers a solution. 
+
+Researchers and academic institutes also license the information. And some government agencies subscribe to the company's "misinformation fingerprints."
+The biggest conceivable opportunity for the company is in Silicon Valley. To date, giants like Facebook and Twitter have not incorporated NewsGuard's ratings into their systems. But one big tech player, Microsoft, has licensed the ratings for users of its Edge browser.
+As for the others, "we think eventually they will" strike licensing deals, Crovitz said, noting "there's a lot of pressure on them to clean up their act."
+When asked if NewsGuard was sharing its profitability milestone partly to encourage the tech platforms to get on board, Brill said the company is "certainly telling them that, you know, we're not going away." 
+In the meantime, NewsGuard's pitch is something that would seem incredibly inefficient to Big Tech: "We use human intelligence, not artificial intelligence," Crovitz quipped. 
+He said he has been heartened to see hundreds of sites make specific changes to try to improve their scores. "Unlike an algorithm," he said, "we're delighted when publishers game our system," because it means a more trustworthy internet for all.

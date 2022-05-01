@@ -1,0 +1,30 @@
+By Ashley Strickland, CNN
+Updated: Wed, 05 Jan 2022 03:15:43 GMT
+Source: CNN
+
+The most powerful space telescope ever built is keeping its cool in space.
+The James Webb Space Telescope, which launched on Christmas Day, successfully completed the deployment of its 70-foot (21-meter) sunshield on Tuesday. This critical milestone is one of several that must occur for the NASA observatory to function properly in space, and having achieved it was a big relief for the Webb team.
+"Unfolding Webb's sunshield in space is an incredible milestone, crucial to the success of the mission," said Gregory L. Robinson, Webb's program director at NASA Headquarters, in a statement. "Thousands of parts had to work with precision for this marvel of engineering to fully unfurl. The team has accomplished an audacious feat with the complexity of this deployment -- one of the boldest undertakings yet for Webb."
+It's one of the most challenging spacecraft deployments NASA has ever attempted, according to the agency.
+Unfurling a tennis court in space
+The massive five-layer sunshield will protect Webb's giant mirror and instruments from the sun's heat. Both the mirror and instruments need to be kept at a very frigid negative 370 degrees Fahrenheit (negative 188 degrees Celsius) to be able to observe the universe as designed. Each of the five sheets is as thin as a human hair and is coated with reflective metal.
+When Webb launched, the sunshield was folded up to fit inside the Ariane 5 rocket that carried the telescope into space. The eight-day process to unfold and tighten the protective shield began on December 28. This included unfolding the support structure for the shield over the course of multiple days before the tensioning, or tightening, of each layer could begin. 
+The fifth layer of the sunshield was tightened and secured into place Tuesday at 11:59 a.m. ET.
+Overall, the entire process, which was controlled by teams on Earth, included the perfect, coordinated movement of hundreds of release mechanisms, hinges, deployment motors, pulleys and cables. 
+"The membrane tensioning phase of sunshield deployment is especially challenging because there are complex interactions between the structures, the tensioning mechanisms, the cables and the membranes," said James Cooper, NASA's Webb sunshield manager, based at Goddard Space Flight Center, in a statement. "This was the hardest part to test on the ground, so it feels awesome to have everything go so well today."
+The teams have been working 12-hour shifts to ensure that everything goes smoothly with Webb's deployments. 
+With the sunshield successfully in place, Webb's project manager Bill Ochs said the telescope has overcome the potential for 70% to 75% of the more than 300 single-point failures that could disrupt its ability to function. 
+ 
+"This milestone represents the pioneering spirit of thousands of engineers, scientists, and technicians who spent significant portions of their careers developing, designing, manufacturing, and testing this first-of-its kind space technology," said Jim Flynn, sunshield manager at Northrop Grumman, NASA's primary contractor for Webb, in a statement.
+The telescope has the ability to look back in time, using its infrared observations to reveal otherwise invisible aspects and look deeper into the universe than ever before. 
+The Webb telescope will look at every phase of cosmic history, including the first glows after the Big Bang that created our universe and the formation of the galaxies, stars and planets that fill it today. Its capabilities will enable the observatory to peer inside the atmospheres of exoplanets and investigate faint signals from the first galaxies formed 13.5 billion years ago.
+"This is the first time anyone has ever attempted to put a telescope this large into space," said Thomas Zurbuchen, associate administrator for NASA's Science Mission Directorate, in a statement. "Webb required not only careful assembly but also careful deployments. The success of its most challenging deployment -- the sunshield -- is an incredible testament to the human ingenuity and engineering skill that will enable Webb to accomplish its science goals."
+What comes next
+Webb is expected to take about 29 days to reach its intended orbit a million miles from Earth, with other critical steps along the way -- and that includes another big challenge later this week: unfolding the telescope's mirror.
+The mirror can extend 21 feet and 4 inches (6.5 meters) -- a massive length that will allow it to collect more light from objects once the telescope is in space. The more light the mirror can collect, the more details the telescope can observe.
+It's the largest mirror NASA has ever built, but its size created a unique problem. The mirror was so large that it couldn't fit inside a rocket. Engineers designed the telescope as a series of moving parts that can fold origami-style and fit inside a 16-foot (5-meter) space for launch.
+
+This is the next series of crucial steps for Webb -- making sure the mirror's 18 hexagonal gold-coated segments unfold and lock together. All of these steps are expected to be completed by the end of this week.
+Finally, Webb will make one more trajectory adjustment to insert itself into an orbit that reaches beyond the moon.
+While that rounds out the 29 days, the telescope will go through a period of commissioning in space that lasts for about five and a half months, which involves cooling down, aligning and calibrating its instruments. All of the instruments also will go through a checkout process to see how they are functioning.
+Webb will begin to collect data and its first images later in 2022, and those are expected to be released in June or July, forever changing the way we see and understand the universe.

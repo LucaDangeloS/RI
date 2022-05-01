@@ -1,0 +1,14 @@
+By Brian Fung, CNN
+Updated: Mon, 14 Feb 2022 20:36:58 GMT
+Source: CNN Business
+
+Texas is suing Facebook's parent company, Meta (FB), over allegations the social media giant illegally harvested the facial recognition data of tens of millions of state residents for a decade.
+The lawsuit, filed Monday in Texas's Harrison County District Court, argues that a now-shuttered Facebook photo-tagging feature failed to get Texans' informed consent before gathering their facial recognition data. The feature worked by analyzing faces in photos, including those of non-Facebook users, and recommending that Facebook users tag the people that the tool identified. 
+Facebook announced it would discontinue the tool in November 2021, months after it settled a groundbreaking class-action lawsuit in Illinois over the same issue for $650 million. At the time, Facebook said it would also delete the data it had collected from at least 600 million users who had been a part of the program.
+By that point, according to Monday's suit by Texas Attorney General Ken Paxton, Facebook had already collected biometric data in violation of the state's consumer protection and biometric data privacy law billions of times. Texas's biometric data law, the Capture or Use of Biometric Identifier (CUBI) Act, was passed in 2009.
+In response to the suit, a Meta spokesperson said: "These claims are without merit and we will defend ourselves vigorously." 
+The suit alleges that from 2010 through June 2011, Facebook "secretly forced millions of Texans into a facial-recognition scheme without their informed consent. As a result, for the next ten years, tens of millions of Texans who appeared in media uploaded to Facebook unsuspectingly had records of their facial geometry captured by Facebook."
+Because many non-Facebook users also had their pictures uploaded to Facebook, the suit alleges, the company violated those people's privacy under state laws, as well.
+The lawsuit marks the culmination of a multi-year investigation by Texas officials into Meta's facial recognition software and how it potentially violated state law. And it highlights how facial recognition is increasingly coming under scrutiny as policymakers and the public grow more skeptical of technology platforms.
+Although Facebook suspended the facial recognition program, the lawsuit said, Meta has "made no such commitment with respect to any of the other platforms or operations under its corporate umbrella, such as Instagram, WhatsApp, Facebook Reality Labs, or its upcoming virtual-reality metaverse."
+The suit calls for the court to impose a $25,000 civil penalty on Meta per violation of the state's biometric law and $10,000 per violation of Texas consumer protection law. Paxton said at a news conference he is seeking billions of dollars in damages. 

@@ -1,0 +1,24 @@
+By Ashley Strickland, CNN
+Updated: Mon, 24 Jan 2022 21:51:32 GMT
+Source: CNN
+
+The James Webb Space Telescope has reached its final destination, almost a month after launch.
+Since lifting off from French Guiana on December 25, the telescope has unfurled its tennis court-size sunshield and unfolded a massive gold mirror that will help it study the universe in new ways and peer inside the atmosphere of exoplanets. 
+The telescope's point of observation is nearly a million miles away from Earth and beyond the moon itself. The space observatory experienced its final burn on Monday to enter this orbit called L2.
+"Webb, welcome home!" said NASA Administrator Bill Nelson in a statement. "Congratulations to the team for all of their hard work ensuring Webb's safe arrival at L2 today. We're one step closer to uncovering the mysteries of the universe. And I can't wait to see Webb's first new views of the universe this summer!"
+Although it doesn't sound like it would take almost a month for the telescope to reach orbit, Webb is unique.
+"Think about throwing a ball straight up in the air, as hard as you can; it starts out very fast, but slows down as gravity pulls it back towards Earth, eventually stopping at its peak and then returning to the ground," said Karen Richon, Webb Flight Dynamics lead engineer at NASA's Goddard Space Flight Center in Greenbelt, Maryland, in a statement. 
+"Just like the ball, Webb is slowing down, and, if we allowed it, would eventually stop and fall back towards Earth."
+If the Ariane 5 rocket, which lifted Webb into space, had been going even a little bit faster, the telescope may have overshot the orbit and exposed its mirror and instruments to the sun if it had to slam on the brakes. 
+"The Ariane 5 targeted Webb so accurately that our first and most critical burn was smaller than we had to plan and design for, leaving more fuel for an extended mission," Richon said.
+A solar orbit that protects Webb from its heat
+While the Hubble Space Telescope orbits Earth, Webb will actually orbit the sun. 
+Webb's orbit will keep the telescope in line with Earth as our planet orbits the sun. This alignment protects the telescope from the heat released by the sun, Earth and even the moon. It's imperative that the telescope stays cool because it will observe the universe in infrared light and detect the faintest signals from objects in our distant universe. Because infrared light can be detected as heat, the entire spacecraft needs to be shielded from bright sources of heat. 
+The spacecraft includes a five-layer sunshield to protect Webb's giant mirror and instruments from the sun's blistering rays because they need to be kept at a very frigid negative 370 degrees Fahrenheit (negative 223 degrees Celsius) to operate. 
+The orbit is called the second sun-Earth Lagrange point, or L2. Lagrange points are named for Joseph-Louis Lagrange. The 18th century mathematician solved the "three-body problem," or stable configurations that allow three bodies to orbit one another while remaining in the same relative positions. 
+The five solutions to the three-body problem are the five Lagrange points, where the gravitational pull of two masses equals the force needed for a small object, or spacecraft, to move along with them. 
+"Utilizing thrust every three weeks or so from small rocket engines aboard Webb will keep it orbiting L2, looping around it in a halo orbit once every six months," Richon said.
+A grand view of the universe
+The L2 point is ideal for Webb because the gravitational forces of the sun and Earth will basically ensure the spacecraft doesn't have to use much thrust to stay in orbit. And it will allow the telescope to have an unimpeded view of the universe, unlike Hubble, which moves in and out of Earth's shadow every 90 minutes.
+The position of Webb also means continuous, stable communication is possible between teams on Earth and the space observatory using the Deep Space Network, composed of three massive antenna ground stations in Australia, Spain and California. 
+Now that Webb is in orbit, the spacecraft will spend the next five months calibrating its instruments. The first images captured by the observatory are expected this summer. 

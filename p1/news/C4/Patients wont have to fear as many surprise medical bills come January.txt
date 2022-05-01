@@ -1,0 +1,30 @@
+By Tami Luhby, CNN
+Updated: Tue, 28 Dec 2021 20:51:58 GMT
+Source: CNN
+
+Americans are set to have one less health care headache in 2022.
+The No Surprises Act, which bans most unexpected medical charges from out-of-network providers, is scheduled to go into effect January 1. It will apply to about 10 million surprise bills a year, according to federal estimates.
+The new law, which Congress approved in late 2020 after a multitude of delays, protects patients when they receive emergency care or scheduled treatment from doctors and hospitals that are not in their insurance networks and that they did not choose. Consumers would be responsible only for their in-network cost-sharing in these situations.
+"The No Surprises Act is really one of the biggest consumer protections to pass in recent decades," said Loren Adler, assistant director of the USC-Brookings Schaeffer Initiative for Health Policy. "Now when patients go to the hospital for an emergency or for elective planned care, like a surgery, they no longer have to worry about getting a surprise out-of-network bill."
+However, the American Hospital Association, the American Medical Association and other providers have filed lawsuits, arguing that the Biden administration's interpretation of the act unfairly benefits health insurers. Their challenges wouldn't halt the law's main patient protections, the industry groups say. Instead, they are looking for changes to the regulations dealing with dispute negotiations between insurers and providers.
+Also, even with the new law, consumers may still get big bills that they weren't expecting -- especially in the early months of the year. Patients will once again have to satisfy their often-hefty deductibles before their insurance kicks in, as happens every January 1, even if they see in-network providers.
+Surprise bills are common
+Surprise medical bills, which can number in the millions each year, are a major concern for many patients. Two in three adults say they worry about unexpected charges, according to the Kaiser Family Foundation.
+About 1 in 5 emergency room visits and up to 1 in 6 in-network hospitalizations include at least one surprise out-of-network bill, according to Kaiser.  
+Patients can be hit with more than $1,200, on average, for anesthesiologists' services, $2,600 for surgical assistants and $750 for childbirth-related care, according to a recent report by the Department of Health and Human Services.
+"No one should have to worry about going bankrupt after falling ill or seeking critical care," HHS Secretary Xavier Becerra said when the report was published in November.
+The new law
+The new rule applies to nearly all private health plans offered by employers and to individual policies bought on or off the Affordable Care Act exchanges. Medicare and Medicaid already prohibit billing patients for the balance of the charges.
+It covers most emergency services provided in hospitals, freestanding emergency departments and urgent care centers licensed to provide emergency care. It also applies to air ambulance services, but not ground ambulances. 
+Also, the law covers non-emergency care from out-of-network providers at in-network facilities -- such as an out-of-network anesthesiologist working with an in-network surgeon or an out-of-network radiologist reading an X-ray ordered by an in-network doctor.
+In these situations, consumers are responsible only for their in-network deductibles, copays or coinsurance.
+If patients choose to see out-of-network providers, the providers would be prohibited from billing the patients the balance unless they provide notice of their network status and estimates of charges, generally 72 hours in advance. The patients would also have to consent to receiving out-of-network care that could cost them more.
+The act is expected to reduce premiums by 0.5% to 1%, in most markets in most years, according to the Congressional Budget Office.
+Who pays the rest of the bill?
+Protecting patients from surprise billing enjoyed wide bipartisan support in Congress and among insurers and providers, but passing legislation to do so hit many hurdles. Despite lawmakers' attempts to mollify all parties, the act sparked criticism from the health care industry.
+The controversy was over who pays the rest of the bill. Insurers pressed lawmakers to base payments on locally negotiated rates, not arbitration. They argued that surprise billing has ballooned in recent years as private equity firms took over physician staffing groups, hospitals consolidated and hospital-based providers opted not to participate in insurer networks.
+Providers, meanwhile, supported using negotiation or mediation and generally opposed a fixed payment standard. They argued it could lead to federal rate setting and remove the incentive for insurers to enter into contracts.
+In the end, the law set up a system where insurers and providers negotiate over the amount to be paid. If they can't come to an agreement, the bill can be settled through an independent dispute resolution process.
+At issue now is HHS' rule to implement that law. It calls for arbitrators to presume that the median in-network price for the service in the local area is the correct amount. But they can also consider other factors, such as the patient's condition, the doctor's level of training and expertise, both parties' market shares and past efforts to reach an agreement.
+Hospitals and physicians don't want arbiters to focus so heavily on the median in-network price.
+"Our legal challenge urges regulators to ensure there is a fair and meaningful process to resolve disputes between health care providers and insurance companies," said Gerald Harmon, president of the American Medical Association, noting doctors' participation in the legislative discussions. "But if regulators don't follow the letter of the law, patient access to care could be jeopardized as ongoing health plan manipulation creates an unsustainable situation for physicians."

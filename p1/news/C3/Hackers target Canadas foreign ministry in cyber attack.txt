@@ -1,0 +1,13 @@
+By Sean Lyngaas, CNN
+Updated: Tue, 25 Jan 2022 14:24:14 GMT
+Source: CNN
+
+A "cyber incident" first detected last week has interrupted some of the Canadian foreign ministry's "internet-based services," the Canadian government said Monday. 
+Canadian cybersecurity officials were working to restore those internet services as of Monday night. "Critical services for Canadians" through the foreign ministry were not affected by the incident, the Treasury Board of Canada Secretariat, a government agency, said in a statement to CNN. 
+"At this time, there is no indication that any other government departments have been impacted by this incident," the statement said. 
+Treasury Board spokesperson Alain Belle-Isle declined to comment when asked who might be responsible for the hack, citing an ongoing investigation.
+"We are constantly reviewing measures to protect Canadians and our critical infrastructure from electronic threats, hacking, and cyber espionage," the Canadian government statement said. 
+Separately, Canadian officials have called for the public to be vigilant in the face of cyber threats. 
+Canada's signals intelligence agency last week advised Canadian critical infrastructure operators "to bolster their awareness of and protection against Russian state-sponsored cyber threats," echoing calls from US and British agencies to brace for potential retaliatory cyber activities from Russia in the context of tensions over Ukraine. 
+It was unclear if there was any connection whatsoever between the Canadian public advisory and the hacking incident facing the Canadian foreign ministry. Belle-Isle said Canadian cybersecurity officials regularly issue advisories on hacking threats.
+"Given this investigation is ongoing, we are unable to comment further on any specific details for operational reasons," Belle-Isle said in an email.

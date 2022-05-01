@@ -1,0 +1,27 @@
+By Ella Nilsen, CNN
+Updated: Mon, 14 Feb 2022 19:55:49 GMT
+Source: CNN
+
+The vast majority of critical minerals and rare earth elements that help power electric vehicles and wind turbines come from mining operations overseas. But a new initiative spearheaded by the US Department of Energy is looking for ways to extract them from fossil fuel waste. 
+The Energy Department plans to build the nation's first large facility to extract critical minerals like nickel and cobalt from waste like coal ash. Those metals could then be used in components for renewable-energy batteries, cell phones and electric vehicles, among other technologies. 
+On Monday, the department is releasing a request for information from industry, developers and research institutions on how to build and operate the new facility, shared first with CNN.  
+
+"Since we get fossil fuels from the earth, there's a lot of other components other than just the carbons," Jennifer Wilcox, the principal deputy assistant secretary for the Department of Energy's Office of Fossil Energy and Carbon Management, told CNN. "There's critical minerals like cobalt and nickel, and there's also rare earth elements." 
+As demand for critical minerals surges, the US is at a supply-chain disadvantage for them. The US currently imports more than 80% of its rare earth elements from offshore suppliers. Much of its critical mineral supply needed to power batteries is also shipped from overseas.  
+China in particular has cornered the global market on processing critical minerals and rare earth elements, but countries including Australia and Malaysia are also involved. 
+Department of Energy officials like Wilcox see coal waste as a new opportunity to make the US less reliant on foreign supply. 
+Even so, it will take years to realize this vision. The new facility -- which the department plans to construct by 2026 and have operational by 2028 -- will both refine materials and show private industry how to scale up extraction of rare earth elements and critical minerals from used fossil fuels. 
+The department aims to have the facility be able to process about 1,000 metric tons of mixed rare earth oxides, increasing that to 10,000 metric tons per year by 2035 and 20,000 metric tons per year by 2040. 
+And although foreign countries lead the US in processing critical minerals from mining, this concept of processing fossil fuel waste for minerals is a relatively new and untested one. 
+"I think we are really in the lead on these concepts," Wilcox said.  
+Focusing on coal waste 
+As the US tries to build out its domestic mining supply, it should also pursue secondary sources of obtaining the material, said Sarma Pisupati, an energy professor and minerals expert at Penn State University. 
+"We need to find domestic sources, and secondary sources are important to look at," said Pisupati. "These are coming from waste piles particularly. If we can develop the technology, we can clean up the environment as well as get these resources." 
+
+The project will primarily focus on extracting minerals from coal waste. However, byproducts from oil and gas drilling -- such as the water used to extract the fuel -- can also be good sources of minerals like lithium.  
+"This is really focused on coal, but it doesn't mean that what we learn from the chemical, physical, thermal extraction processes we're investing in -- that they can't also be applied to other energy resources as well," Wilcox said. "That's what we would like to see in the future." 
+A site for the refinery hasn't yet been selected, but the request for information process will help the department scout a location. Still, Wilcox told CNN that a region with heavy coal waste concentrations like Appalachia, Wyoming or North Dakota could make a good location. 
+"Absolutely in regions where there's been legacy fossil production, but also looking at these for an opportunity for these communities to transition," Wilcox said. Ultimately, she added, the mineral extraction technology developed by the Department of Energy could be transported to sites of coal waste all around the country to extract critical minerals and rare earth elements. 
+Pisupati told CNN that an important job of a processing facility would also be identifying and cataloging what kinds of coal ash and other waste materials can actually be used to build batteries. 
+"Not all coal ash samples would have the highest concentration" of critical minerals, he said.   
+Another challenge is that there will be smaller concentrations of critical minerals found in fossil fuel waste, compared with the concentrations that can be mined directly from rocks in the earth, Wilcox said. Separating them out can be expensive, which is why the Department of Energy is aiming to pilot the research and technology first.  
