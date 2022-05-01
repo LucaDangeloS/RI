@@ -1,0 +1,4 @@
+p1/index*
+p1/news
+p1/.*/
+!.gitignore
