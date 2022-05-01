@@ -4,3 +4,5 @@ p1/.*/
 !.gitignore
 p1/news/
 p2/news/
+p1/docsNews/
+p1/target
