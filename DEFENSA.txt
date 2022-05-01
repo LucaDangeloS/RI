@@ -1,0 +1,2 @@
+1: IndexPartial, BestTermsInDoc
+2: IndexPartial, DocClusters
