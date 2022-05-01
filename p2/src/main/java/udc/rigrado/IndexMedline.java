@@ -113,7 +113,7 @@ public class IndexMedline implements AutoCloseable{
             System.out.println(" caught a " + e.getClass() + "\n with message: " + e.getMessage());
         }
     }
-    void indexDocs (){
+    void indexDocs (IndexWriter writer, final Path folder){
 
     }
 
