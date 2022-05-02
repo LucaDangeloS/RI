@@ -1,5 +1,5 @@
 p1/index*/
-p1/news
+p1/news/
 p1/.*/
 !.gitignore
 p1/news/
