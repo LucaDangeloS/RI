@@ -4,46 +4,44 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d903e6e7-6ecf-4d87-bba9-412732efc798" name="Changes" comment="Empezado el IndexMedline">
-      <change afterPath="$PROJECT_DIR$/index/_2f.cfe" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/index/_2f.cfs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/index/_2f.si" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/index/_2g.cfe" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/index/_2g.cfs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/index/_2g.si" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/index/_2h.cfe" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/index/_2h.cfs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/index/_2h.si" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/index/_2i.cfe" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/index/_2i.cfs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/index/_2i.si" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/index/_2j.cfe" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/index/_2j.cfs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/index/_2j.si" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/index/_2k.cfe" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/index/_2k.cfs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/index/_2k.si" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/index/_2l.cfe" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/index/_2l.cfs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/index/_2l.si" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/index/_2m.cfe" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/index/_2m.cfs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/index/_2m.si" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/index/_2n.cfe" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/index/_2n.cfs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/index/_2n.si" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/index/_2o.cfe" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/index/_2o.cfs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/index/_2o.si" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/index/_2p.cfe" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/index/_2p.cfs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/index/_2p.si" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/index/_2q.cfe" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/index/_2q.cfs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/index/_2q.si" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/index/write.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/udc/rigrado/IndexMedline.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/udc/rigrado/IndexMedline.java" afterDir="false" />
+    <list default="true" id="d903e6e7-6ecf-4d87-bba9-412732efc798" name="Changes" comment="IndexMedline terminado">
+      <change afterPath="$PROJECT_DIR$/index/_3h.cfe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_3h.cfs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_3h.si" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_3i.cfe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_3i.cfs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_3i.si" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_3j.cfe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_3j.cfs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_3j.si" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_3k.cfe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_3k.cfs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_3k.si" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_3l.cfe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_3l.cfs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_3l.si" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_3m.cfe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_3m.cfs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_3m.si" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_3n.cfe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_3n.cfs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_3n.si" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_3o.cfe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_3o.cfs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_3o.si" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_3p.cfe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_3p.cfs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_3p.si" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_3q.cfe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_3q.cfs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_3q.si" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_3r.cfe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_3r.cfs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_3r.si" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_3s.cfe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_3s.cfs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_3s.si" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/segments_m" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -110,7 +108,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1651337329877</updated>
-      <workItem from="1651337332124" duration="28528000" />
+      <workItem from="1651337332124" duration="28847000" />
     </task>
     <task id="LOCAL-00001" summary="Empezado el IndexMedline">
       <created>1651402500621</created>
@@ -119,7 +117,14 @@
       <option name="project" value="LOCAL" />
       <updated>1651402500621</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="IndexMedline terminado">
+      <created>1651454345131</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1651454345131</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -169,18 +174,8 @@
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="Empezado el IndexMedline" />
-    <option name="LAST_COMMIT_MESSAGE" value="Empezado el IndexMedline" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/udc/rigrado/IndexMedline.java</url>
-          <line>162</line>
-          <option name="timeStamp" value="10" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+    <MESSAGE value="IndexMedline terminado" />
+    <option name="LAST_COMMIT_MESSAGE" value="IndexMedline terminado" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
