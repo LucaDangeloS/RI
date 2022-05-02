@@ -5,9 +5,45 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d903e6e7-6ecf-4d87-bba9-412732efc798" name="Changes" comment="Empezado el IndexMedline">
-      <change afterPath="$PROJECT_DIR$/src/main/java/udc/rigrado/IndexMedline.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/udc/rigrado/App.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/udc/rigrado/AppTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/example/AppTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_2f.cfe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_2f.cfs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_2f.si" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_2g.cfe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_2g.cfs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_2g.si" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_2h.cfe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_2h.cfs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_2h.si" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_2i.cfe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_2i.cfs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_2i.si" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_2j.cfe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_2j.cfs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_2j.si" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_2k.cfe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_2k.cfs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_2k.si" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_2l.cfe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_2l.cfs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_2l.si" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_2m.cfe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_2m.cfs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_2m.si" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_2n.cfe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_2n.cfs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_2n.si" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_2o.cfe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_2o.cfs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_2o.si" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_2p.cfe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_2p.cfs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_2p.si" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_2q.cfe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_2q.cfs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/_2q.si" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/index/write.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/udc/rigrado/IndexMedline.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/udc/rigrado/IndexMedline.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,6 +86,22 @@
     "show.migrate.to.gradle.popup": "false"
   }
 }]]></component>
+  <component name="RunManager">
+    <configuration name="IndexMedline" type="Application" factoryName="Application" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="udc.rigrado.IndexMedline" />
+      <module name="p2" />
+      <option name="PROGRAM_PARAMETERS" value="-index ./index -docs ./DocMed/MED.ALL -openmode create -indexingmodel jm 0.5" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="udc.rigrado.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -58,7 +110,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1651337329877</updated>
-      <workItem from="1651337332124" duration="8956000" />
+      <workItem from="1651337332124" duration="28528000" />
     </task>
     <task id="LOCAL-00001" summary="Empezado el IndexMedline">
       <created>1651402500621</created>
@@ -118,6 +170,17 @@
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="Empezado el IndexMedline" />
     <option name="LAST_COMMIT_MESSAGE" value="Empezado el IndexMedline" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/udc/rigrado/IndexMedline.java</url>
+          <line>162</line>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
