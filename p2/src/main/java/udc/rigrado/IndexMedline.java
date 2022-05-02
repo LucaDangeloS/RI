@@ -36,13 +36,6 @@ public class IndexMedline implements AutoCloseable{
         }
     }
 
-    static final FieldType TYPE_STORED_INDEXED = new FieldType();
-    static {
-        TYPE_STORED_INDEXED.setStored(true);
-        TYPE_STORED_INDEXED.setIndexOptions(IndexOptions.DOCS);
-        TYPE_STORED_INDEXED.freeze();
-    }
-
     private IndexMedline() throws IOException {
     }
 
@@ -162,7 +155,7 @@ public class IndexMedline implements AutoCloseable{
                 content = Id_Content[1];
                 doc.add(new TextField("contents",
                         content, Field.Store.YES));
-                doc.add(new Field("DocIDMedline", Id, TYPE_STORED_INDEXED));
+                doc.add(new TextField("DocIDMedline", Id, Field.Store.YES));
 
                 switch (openmode) {
                     case CREATE:
