@@ -3,16 +3,8 @@ package udc.rigrado;
 import org.apache.lucene.index.IndexWriterConfig;
 
 import java.io.*;
-import java.net.InetAddress;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.nio.file.attribute.FileTime;
 import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -32,7 +24,6 @@ import java.util.concurrent.ExecutorService;
 
 public class IndexMedline implements AutoCloseable{
 
-    private final Path indexPath;
     private enum Modes {
         CREATE(IndexWriterConfig.OpenMode.CREATE),
         APPEND(IndexWriterConfig.OpenMode.APPEND),
@@ -45,8 +36,14 @@ public class IndexMedline implements AutoCloseable{
         }
     }
 
-    private IndexMedline(Path indexPath) throws IOException {
-        this.indexPath = indexPath;
+    static final FieldType TYPE_STORED_INDEXED = new FieldType();
+    static {
+        TYPE_STORED_INDEXED.setStored(true);
+        TYPE_STORED_INDEXED.setIndexOptions(IndexOptions.DOCS);
+        TYPE_STORED_INDEXED.freeze();
+    }
+
+    private IndexMedline() throws IOException {
     }
 
     public static void main(String[] args) {
@@ -59,7 +56,7 @@ public class IndexMedline implements AutoCloseable{
         String mode = null;
         String indexingmodel = null;
         float lambda = 0;
-        Similarity similarity = null;
+        Similarity similarity;
 
         for (int i = 0; i < args.length; i++) {
             switch (args[i]) {
@@ -88,6 +85,11 @@ public class IndexMedline implements AutoCloseable{
             System.exit(1);
         }
 
+        if (indexingmodel == null) {
+            System.err.println("Indexingmodel must be jm lambda or tfidf");
+            System.exit(1);
+        }
+
         if (mode != null) {
             try { openmode = Modes.valueOf(mode.toUpperCase()); }
             catch (IllegalArgumentException e) {
@@ -103,19 +105,15 @@ public class IndexMedline implements AutoCloseable{
             System.exit(1);
         }
 
-        if (indexingmodel != null){
-            switch (indexingmodel.toUpperCase()){
-                case "JM":
-                    similarity = new LMJelinekMercerSimilarity(lambda);
-                    break;
-                case "TFIDF":
-                    similarity = new ClassicSimilarity();
-                    break;
-                default:
-                    throw new IllegalArgumentException("Invalid indexingmodel: " + indexingmodel);
-            }
-
-
+        switch (indexingmodel.toUpperCase()){
+            case "JM":
+                similarity = new LMJelinekMercerSimilarity(lambda);
+                break;
+            case "TFIDF":
+                similarity = new ClassicSimilarity();
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid indexingmodel: " + indexingmodel);
         }
 
         Date start = new Date();
@@ -129,7 +127,7 @@ public class IndexMedline implements AutoCloseable{
             iwc.setOpenMode(openmode.openMode);
 
             try (IndexWriter writer = new IndexWriter(dir, iwc);
-                 IndexMedline indexFiles = new IndexMedline(Path.of(indexPath))) {
+                 IndexMedline indexFiles = new IndexMedline()) {
                 indexFiles.indexDocs(writer, docDir);
             } finally {
                 IOUtils.close();
@@ -144,23 +142,27 @@ public class IndexMedline implements AutoCloseable{
             System.out.println(" caught a " + e.getClass() + "\n with message: " + e.getMessage());
         }
     }
-    void indexDocs (IndexWriter writer, Path file) throws IOException{
+    void indexDocs (IndexWriter writer, Path file) throws IOException {
         try (InputStream stream = Files.newInputStream(file)) {
             // make a new, empty document
             String str = new String(stream.readAllBytes());
-            Document doc = new Document();
+            Document doc;
             OpenMode openmode = writer.getConfig().getOpenMode();
-
             String[] docsMED = str.split(".I ");
+            String docMED;
+            String[] Id_Content;
+            String content;
+            String Id;
 
             for ( int i = 1 ; i < docsMED.length; i++) {
-                String docMED = docsMED[i];
-                String[] Id_Content = docMED.split("\n.W\n");
-                int Id = Integer.parseInt(Id_Content[0]);
-                String content = Id_Content[1];
+                doc = new Document();
+                docMED = docsMED[i];
+                Id_Content = docMED.split("(\r)*\n.W(\r)*\n");
+                Id = Id_Content[0];
+                content = Id_Content[1];
                 doc.add(new TextField("contents",
                         content, Field.Store.YES));
-                doc.add(new StoredField("DocIDMedline", Id));
+                doc.add(new Field("DocIDMedline", Id, TYPE_STORED_INDEXED));
 
                 switch (openmode) {
                     case CREATE:
@@ -169,12 +171,11 @@ public class IndexMedline implements AutoCloseable{
                         break;
                     case APPEND:
                         System.out.println("Updating " + Id);
-//                        writer.updateDocument(new Term("DocIDMedline", String.valueOf(Id)), doc);
-                        writer.updateDocument(new Term("contents", content), doc);
+                        writer.addDocument(doc);
                         break;
                     case CREATE_OR_APPEND:
                         System.out.println("Indexing " + Id);
-                        writer.updateDocument(new Term("contents", content), doc);
+                        writer.updateDocument(new Term("DocIDMedline", String.valueOf(Id)), doc);
                         break;
                     default:
                         break;
