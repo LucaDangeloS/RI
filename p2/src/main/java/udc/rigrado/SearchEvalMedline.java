@@ -1,5 +1,6 @@
 package udc.rigrado;
 
+import com.opencsv.CSVWriter;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.DirectoryReader;
@@ -15,8 +16,14 @@ import org.apache.lucene.search.similarities.Similarity;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
 
 public class SearchEvalMedline {
@@ -30,6 +37,8 @@ public class SearchEvalMedline {
         Integer top = null;
         String searchmodel = null;
         Similarity similarity;
+        String outputCsvFile;
+        String outputTxtFile;
         float lambda = 0;
         Integer query1 = null;
         Integer query2 = null;
@@ -122,6 +131,9 @@ public class SearchEvalMedline {
         switch (searchmodel.toUpperCase()){
             case "JM":
                 similarity = new LMJelinekMercerSimilarity(lambda);
+                String strlambda = Float.toString(lambda);
+                outputCsvFile = String.format("medline.jm.%d.cut.lambda.%s.q", cut, strlambda) + querPar + ".csv";
+                outputTxtFile = String.format("medline.jm.%d.hits.lambda.%s.q", top, strlambda) + querPar + ".txt";
                 break;
             case "TFIDF":
                 similarity = new ClassicSimilarity();
@@ -249,4 +261,101 @@ public class SearchEvalMedline {
 
         createTxt(outputTxtFile, fileOutput.toString());
     }
+
+    private static HashMap<Integer, String> parseQueryDoc(Path path) {
+        HashMap<Integer, String> queries = new HashMap<>();
+        
+        try (InputStream stream = Files.newInputStream(path)) {
+            String str = new String(stream.readAllBytes());
+            String[] docsMED = str.split(".I ");
+            String query;
+            String[] Id_Content;
+            String content;
+            String Id;
+
+            for (int i = 1; i < docsMED.length; i++) {
+                query = docsMED[i];
+                Id_Content = query.split("(\r)*\n.W(\r)*\n");
+                Id = Id_Content[0];
+                content = Id_Content[1];
+                queries.put(Integer.parseInt(Id), content);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        return queries;
+    }
+
+    private static HashMap<Integer, ArrayList<Integer>> parseRelevanceDoc(Path path) {
+        HashMap<Integer, ArrayList<Integer>> relevance = new HashMap<>();
+
+        try (InputStream stream = Files.newInputStream(path)) {
+            String str = new String(stream.readAllBytes());
+            ArrayList<String> lines = new ArrayList<>();
+            str.lines().forEach(lines::add);
+
+            ArrayList<Integer> docRelevance = new ArrayList<>();
+            String[] splitLine;
+            // First document ID in MED.QRY
+            int lastId = Integer.parseInt(lines.get(0).split(" ")[0]);
+            int currID;
+
+            for (String line: lines) {
+                splitLine = line.split(" ");
+                currID = Integer.parseInt(splitLine[0]);
+
+                if (currID != lastId) {
+                    relevance.put(lastId, docRelevance);
+                    docRelevance = new ArrayList<>();
+                }
+                
+                lastId = currID;
+                docRelevance.add(Integer.valueOf(splitLine[2]));
+            }
+            relevance.put(lastId, docRelevance);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return relevance;
+    }
+
+    private static void createCsv(String[] header, String[] queries, ArrayList<String[]> metrics, String outputPath) {
+        try {
+            FileWriter outputfile = new FileWriter(outputPath);
+            CSVWriter writer = new CSVWriter(outputfile);
+            writer.writeNext(header);
+            String[] line;
+            int i = 0;
+
+            for (String[] row: metrics) {
+                line = new String[row.length + 1];
+                line[0] = queries[i];
+                for (int j = 0; j < row.length; j++) {
+                    line[j + 1] = row[j];
+                }
+                writer.writeNext(line);
+                i++;
+            }
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void createTxt(String outputPath, String output) {
+        try{
+            FileWriter outputfile = new FileWriter(outputPath);
+            outputfile.write(output);
+
+            outputfile.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+//Terminado el 4/5/2022f
+
+
 }
