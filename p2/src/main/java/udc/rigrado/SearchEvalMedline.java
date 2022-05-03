@@ -44,8 +44,8 @@ public class SearchEvalMedline {
         Integer query2 = null;
 
         IndexReader reader = null;
-        Directory dir = null;
-        IndexSearcher searcher = null;
+        Directory dir;
+        IndexSearcher searcher;
         QueryParser parser;
         Query query = null;
         String querPar = null;
@@ -110,9 +110,6 @@ public class SearchEvalMedline {
             dir = FSDirectory.open(Paths.get(indexPath));
             reader = DirectoryReader.open(dir);
 
-        } catch (CorruptIndexException e1) {
-            System.out.println("Graceful message: exception " + e1);
-            e1.printStackTrace();
         } catch (IOException e1) {
             System.out.println("Graceful message: exception " + e1);
             e1.printStackTrace();
@@ -332,9 +329,7 @@ public class SearchEvalMedline {
             for (String[] row: metrics) {
                 line = new String[row.length + 1];
                 line[0] = queries[i];
-                for (int j = 0; j < row.length; j++) {
-                    line[j + 1] = row[j];
-                }
+                System.arraycopy(row, 0, line, 1, row.length);
                 writer.writeNext(line);
                 i++;
             }
