@@ -1,0 +1,28 @@
+
+Results for query: "the crystalline lens in vertebrates, including humans." showing for the first 5 documents.
+72	 -- score: 11.512802
+168	 -- score: 10.620219
+500	 -- score: 9.875228
+181	 -- score: 9.506988
+87	 -- score: 7.2214785
+P@5 = 0,8000  Recall@5 = 0,1081 AP@5 = 0,0541
+
+Results for query: "the relationship of blood and cerebrospinal fluid oxygen concentrations
+or partial pressures.  a method of interest is polarography." showing for the first 5 documents.
+258	 -- score: 23.04568
+713	 -- score: 20.472582
+162	 -- score: 18.247534
+187	 -- score: 18.041683
+128	 -- score: 17.63611
+P@5 = 0,6000  Recall@5 = 0,1875 AP@5 = 0,0750
+
+Results for query: "electron microscopy of lung or bronchi." showing for the first 5 documents.
+160	 -- score: 12.613595
+78	 -- score: 12.269298
+230	 -- score: 12.113205
+70	 -- score: 12.035921
+407	 -- score: 11.1119
+P@5 = 0,8000  Recall@5 = 0,1818 AP@5 = 0,0909
+
+
+MAP = 0,0733

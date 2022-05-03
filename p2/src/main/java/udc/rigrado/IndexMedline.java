@@ -59,7 +59,7 @@ public class IndexMedline implements AutoCloseable{
                     break;
                 case "-indexingmodel":
                     indexingmodel = args[++i];
-                    if(Objects.equals(indexingmodel, "jm")){
+                    if(Objects.equals(indexingmodel.toUpperCase(), "JM")){
                         lambda = Float.parseFloat(args[++i]);
                     }
                     break;
