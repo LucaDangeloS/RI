@@ -345,8 +345,7 @@ public class IndexFiles implements AutoCloseable {
                         DateTools.dateToString(new Date(lastAccessTime.toMillis()), DateTools.Resolution.SECOND), Field.Store.YES));
                 doc.add(new StringField("lastModifiedTimeLucene",
                         DateTools.dateToString(new Date(lastModifiedTime.toMillis()), DateTools.Resolution.SECOND), Field.Store.YES));
-                doc.add(new TextField("contents",
-                        str, Field.Store.NO));
+                doc.add(new TextField("contents", str, Field.Store.NO));
                 doc.add(new Field("contentsStored", str, TYPE_STORED_INDEXED));
                 doc.add(new StringField("hostname", InetAddress.getLocalHost().getHostName(), Field.Store.YES));
                 doc.add(new StringField("thread", Thread.currentThread().getName(), Field.Store.YES));

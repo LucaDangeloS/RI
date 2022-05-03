@@ -14,13 +14,11 @@ import org.apache.lucene.index.IndexWriterConfig.OpenMode;
 import org.apache.lucene.search.similarities.ClassicSimilarity;
 import org.apache.lucene.search.similarities.LMJelinekMercerSimilarity;
 import org.apache.lucene.search.similarities.Similarity;
-import org.apache.lucene.search.similarities.TFIDFSimilarity;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.IOUtils;
 
 import java.nio.file.Path;
-import java.util.concurrent.ExecutorService;
 
 public class IndexMedline implements AutoCloseable{
 
@@ -153,8 +151,7 @@ public class IndexMedline implements AutoCloseable{
                 Id_Content = docMED.split("(\r)*\n.W(\r)*\n");
                 Id = Id_Content[0];
                 content = Id_Content[1];
-                doc.add(new TextField("contents",
-                        content, Field.Store.YES));
+                doc.add(new TextField("contents", content, Field.Store.YES));
                 doc.add(new TextField("DocIDMedline", Id, Field.Store.YES));
 
                 switch (openmode) {
@@ -168,12 +165,11 @@ public class IndexMedline implements AutoCloseable{
                         break;
                     case CREATE_OR_APPEND:
                         System.out.println("Indexing " + Id);
-                        writer.updateDocument(new Term("DocIDMedline", String.valueOf(Id)), doc);
+                        writer.updateDocument(new Term("DocIDMedline", Id), doc);
                         break;
                     default:
                         break;
                 }
-
             }
         }
     }
