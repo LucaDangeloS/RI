@@ -148,7 +148,8 @@ public class Compare {
             WilcoxonSignedRankTest wilcoxon = new WilcoxonSignedRankTest();
             pValue = wilcoxon.wilcoxonSignedRank(table1, table2);
         }
-        System.out.println(pValue);
+
+        System.out.println("pvalue = " + pValue);
 
 
     }
