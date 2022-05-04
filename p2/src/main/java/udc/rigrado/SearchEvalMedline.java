@@ -219,24 +219,25 @@ public class SearchEvalMedline {
             float avgPrecision = 0;
             float numerador = 0;
             float precision = 0;
-            int corteN = 0;
+            int docN = 0;
 
             for (int j = 0; j < Math.min(cut, topDocs.totalHits.value); j++) {
                 try {
-                    corteN = Integer.parseInt(searcher.doc(topDocs.scoreDocs[j].doc).get("DocIDMedline"));
+                    docN = Integer.parseInt(searcher.doc(topDocs.scoreDocs[j].doc).get("DocIDMedline"));
+                    if(relevantDocuments.contains(docN)){
+                        numerador++;
+                        precision = numerador/(j+1); // (j+1) o cut?
+                        avgPrecision += precision;
+                    }
                 } catch (IOException e) {
                     System.err.println("Exception: " + e);
                     e.printStackTrace();
                 }
-                if(relevantDocuments.contains(corteN)){
-                    numerador++;
-                    precision = numerador/cut;
-                    avgPrecision += precision;
-
-                }
             }
+            if (topDocs.totalHits.value == 0) querySize--;
 
-            avgPrecision = avgPrecision/relevantDocuments.size();
+            precision = numerador/cut; // Si ya se encuentran todos los relevantes pero el cut es más alto se reduce la precision
+            avgPrecision = avgPrecision/relevantDocuments.size(); // No lleva en cuenta documentos irrelevantes después del ultimo relevante
             map += avgPrecision;
             float recall = numerador/relevantDocuments.size();
 
@@ -252,10 +253,13 @@ public class SearchEvalMedline {
 
         }
         map = map/(querySize);
+        mean_precision = mean_precision/(querySize);
+        mean_recall = mean_recall/(querySize);
 
-        csvMetricValues.add(new String[]{String.valueOf(mean_precision/querySize), String.valueOf(mean_recall/querySize), String.valueOf(map/querySize)});
+        csvMetricValues.add(new String[]{String.valueOf(mean_precision), String.valueOf(mean_recall), String.valueOf(map)});
         createCsv(csvMetricHeaders, csvQueryHeaders, csvMetricValues, outputCsvFile);
-        String mapOutput = String.format("\n\nMAP = %.4f", map);
+
+        String mapOutput = String.format("\n\nMean_Precision = %.4f  Mean_Recall = %.4f  MAP = %.4f", mean_precision, mean_recall, map);
         fileOutput.append(mapOutput + "\n");
         System.out.println(mapOutput);
 

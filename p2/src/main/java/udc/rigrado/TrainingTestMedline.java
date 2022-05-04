@@ -210,24 +210,25 @@ public class TrainingTestMedline {
             float avgPrecision = 0;
             float numerador = 0;
             float precision = 0;
-            int corteN = 0;
+            int docN = 0;
 
-            for (int j = 0; j < Math.min(cut, topDocs.scoreDocs.length); j++) {
+            for (int j = 0; j < Math.min(cut, topDocs.totalHits.value); j++) {
                 try {
-                    corteN = Integer.parseInt(searcher.doc(topDocs.scoreDocs[j].doc).get("DocIDMedline"));
+                    docN = Integer.parseInt(searcher.doc(topDocs.scoreDocs[j].doc).get("DocIDMedline"));
+                    if(relevantDocuments.contains(docN)){
+                        numerador++;
+                        precision = numerador/(j+1); // (j+1) o cut?
+                        avgPrecision += precision;
+                    }
                 } catch (IOException e) {
-                    System.out.println("Exception " + e);
+                    System.err.println("Exception: " + e);
                     e.printStackTrace();
                 }
-                if(relevantDocuments.contains(corteN)){
-                    numerador++;
-                    precision = numerador/cut;
-                    avgPrecision += precision;
-
-                }
             }
+            if (topDocs.totalHits.value == 0) querySize--;
 
-            avgPrecision = avgPrecision/relevantDocuments.size();
+            precision = numerador/cut; // Si ya se encuentran todos los relevantes pero el cut es más alto se reduce la precision
+            avgPrecision = avgPrecision/relevantDocuments.size(); // No lleva en cuenta documentos irrelevantes después del ultimo relevante
             map += avgPrecision;
             float recall = numerador/relevantDocuments.size();
 
@@ -236,8 +237,14 @@ public class TrainingTestMedline {
 
             csvMetricValues.add(new String[]{String.valueOf(precision), String.valueOf(recall), String.valueOf(avgPrecision)});
 
+//            String outStr = String.format("P@%d = %.4f  Recall@%d = %.4f AP@%d = %.4f",
+//                    cut, precision, cut, recall, cut, avgPrecision);
+//            System.out.println(outStr);
+
         }
         map = map/(querySize);
+        mean_precision = mean_precision/(querySize);
+        mean_recall = mean_recall/(querySize);
 
         csvMetricValues.add(new String[]{String.valueOf(mean_precision/querySize), String.valueOf(mean_recall/querySize), String.valueOf(map/querySize)});
         createCsv(csvMetricHeaders, csvQueryHeaders, csvMetricValues, outputCsvFile);
@@ -250,7 +257,7 @@ public class TrainingTestMedline {
                                      Metrica metrica) throws IOException
     {
         ArrayList<String[]> csvMetricValues = new ArrayList<>();
-        ArrayList<Integer> relevantDocuments;
+        ArrayList<Integer> relevantDocuments = new ArrayList<>();
         float numerador = 0;
         float maxMetric = 0;
         int corteN = 0;
@@ -282,10 +289,9 @@ public class TrainingTestMedline {
                     System.out.println("Exception " + e);
                     e.printStackTrace();
                 }
-                if(relevantDocuments.contains(corteN)){
+                if(relevantDocuments.contains(corteN)) {
                     numerador++;
-                    precision = numerador/cut;
-                    avgPrecision += precision;
+
 
                 }
             }
