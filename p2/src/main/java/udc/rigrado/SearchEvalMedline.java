@@ -30,7 +30,7 @@ public class SearchEvalMedline {
     public static void main(String[] args) {
         String usage = "java SearchEvalMedline"
                 + " [-indexin INDEX_PATH] [-search jm lambda | tfidf] [-cut n] [-top m] [-queries all | int1 | int1-int2] " + "\n\n"
-                + "This indexes the documents in DOCS_PATH, creating a Lucene index\n";
+                + "This shows top m documents of each query and metrics such as precission recall and average precission at cut n.\n";
 
         String indexPath = "./index";
         Integer cut = null;
