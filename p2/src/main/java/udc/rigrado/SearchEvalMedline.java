@@ -35,6 +35,26 @@ public class SearchEvalMedline {
         TFIDF
     }
 
+    // Data type to hold precision, recall and MAP
+    private static class Metrics {
+        public float precision = 0;
+        public float AP = 0;
+        public float recall = 0;
+        public float map = 0;
+        public boolean valid;
+
+        public Metrics(float precision, float AP, float recall, float map) {
+            this.precision = precision;
+            this.AP = AP;
+            this.recall = recall;
+            this.map = map;
+            this.valid = true;
+        }
+        public Metrics() {
+            this.valid = false;
+        }
+    }
+
     public static void main(String[] args) {
         String usage = "java SearchEvalMedline"
                 + " [-indexin INDEX_PATH] [-search jm lambda | tfidf] [-cut n] [-top m] [-queries all | int1 | int1-int2] " + "\n\n"
@@ -182,7 +202,7 @@ public class SearchEvalMedline {
 
         int querySize = query2 - query1 + 1;
         ArrayList<String[]> csvMetricValues = new ArrayList<>();
-        String[] csvMetricHeaders = {"Query I", "P@" + cut, "Recall@" + cut, "AP@" + cut};
+        String[] csvMetricHeaders = {"Query I", "P@" + cut, "R@" + cut, "AP@" + cut};
         String[] csvQueryHeaders = new String[querySize + 1];
         for (int i = query1; i <= query2; i++) {
             csvQueryHeaders[i - query1] = String.valueOf(i);
@@ -193,31 +213,34 @@ public class SearchEvalMedline {
         float mean_precision = 0;
         float mean_recall = 0;
         float map = 0;
+        Metrics metrics = new Metrics();
 
         for (int i = query1; i <= query2; i++) {
 
+            TopDocs topDocs = null;
+            // Obtiene resultados de query y imprime la query
             try {
                 query = parser.parse(mapQueries.get(i));
-            } catch (ParseException e) {
+                topDocs = null;
+                topDocs = searcher.search(query, Math.max(top, cut));
+                String queryOutput = "\n" + "Results for query: \"" + mapQueries.get(i).trim() + "\" showing for the first " + top + " documents.";
+                fileOutput.append(queryOutput + "\n");
+                System.out.println(queryOutput);
+            } catch (Exception e) {
+                System.err.println("Exception: " + e);
                 e.printStackTrace();
             }
 
-            TopDocs topDocs = null;
-            try {
-                topDocs = searcher.search(query, Math.max(top, cut));
-            } catch (IOException e1) {
-                System.err.println("Exception: " + e1);
-                e1.printStackTrace();
-            }
-            String queryOutput = "\n" + "Results for query: \"" + mapQueries.get(i).trim() + "\" showing for the first " + top + " documents.";
-            fileOutput.append(queryOutput + "\n");
-            System.out.println(queryOutput);
-
+            // Imprime los scores y obtiene las métricas
             for (int j = 0; j < Math.min(top, topDocs.totalHits.value); j++) {
                 try {
                     String docOutput = searcher.doc(topDocs.scoreDocs[j].doc).get("DocIDMedline") + "\t -- score: " + topDocs.scoreDocs[j].score;
                     fileOutput.append(docOutput + "\n");
                     System.out.println(docOutput);
+
+                    ArrayList<Integer> relevantDocuments = mapRelevance.get(i);
+                    metrics = getMetricsFromQuery(query, searcher, relevantDocuments, cut, querySize);
+
                 } catch (CorruptIndexException e) {
                     System.err.println("Corrupt Index " + e);
                     e.printStackTrace();
@@ -225,49 +248,24 @@ public class SearchEvalMedline {
                     System.err.println("Exception: " + e);
                     e.printStackTrace();
                 }
-
             }
 
-            ArrayList<Integer> relevantDocuments = mapRelevance.get(i);
-            float avgPrecision = 0;
-            float numerador = 0;
-            float precision;
-            int docN;
-
-            for (int j = 0; j < Math.min(cut, topDocs.totalHits.value); j++) {
-                try {
-                    docN = Integer.parseInt(searcher.doc(topDocs.scoreDocs[j].doc).get("DocIDMedline"));
-                    if (relevantDocuments.contains(docN)) {
-                        numerador++;
-                        precision = numerador/(j+1); // (j+1) o cut?
-                        avgPrecision += precision;
-                    }
-                } catch (IOException e) {
-                    System.err.println("Exception: " + e);
-                    e.printStackTrace();
-                }
-            }
-
-            if (topDocs.totalHits.value == 0) querySize--;
+            if (!metrics.valid) querySize--;
             if (querySize == 0) break;
 
-            precision = numerador/cut; // Si ya se encuentran todos los relevantes pero el cut es más alto se reduce la precision
-            avgPrecision = avgPrecision/relevantDocuments.size(); // No lleva en cuenta documentos irrelevantes después del ultimo relevante
-            map += avgPrecision;
-            float recall = numerador/relevantDocuments.size();
+            mean_precision += metrics.precision;
+            mean_recall += metrics.recall;
+            map += metrics.AP;
 
-            mean_precision += precision;
-            mean_recall += recall;
-
-            csvMetricValues.add(new String[]{String.valueOf(precision), String.valueOf(recall), String.valueOf(avgPrecision)});
+            csvMetricValues.add(new String[]{String.valueOf(metrics.precision), String.valueOf(metrics.recall), String.valueOf(metrics.AP)});
 
             String outStr = String.format("P@%d = %.4f  Recall@%d = %.4f AP@%d = %.4f",
-                    cut, precision, cut, recall, cut, avgPrecision);
+                    cut, metrics.precision, cut, metrics.recall, cut, metrics.AP);
             fileOutput.append(outStr + "\n");
             System.out.println(outStr);
-
         }
-        map = map/(querySize);
+
+        map = map / querySize;
         mean_precision = mean_precision/(querySize);
         mean_recall = mean_recall/(querySize);
 
@@ -279,6 +277,33 @@ public class SearchEvalMedline {
         System.out.println(mapOutput);
 
         createTxt(outputTxtFile, fileOutput.toString());
+    }
+
+    private static Metrics getMetricsFromQuery(Query query, IndexSearcher searcher, ArrayList<Integer> relevantDocuments, int cut, int qSize) throws IOException {
+        float avgPrecision = 0;
+        int querySize = qSize;
+        float numerador = 0;
+        float precision;
+        int docN;
+
+        TopDocs topDocs = searcher.search(query, cut);
+        if (topDocs == null) return new Metrics();
+
+        for (int j = 0; j < Math.min(cut, topDocs.totalHits.value); j++) {
+            docN = Integer.parseInt(searcher.doc(topDocs.scoreDocs[j].doc).get("DocIDMedline"));
+
+            if(relevantDocuments.contains(docN)) {
+                numerador++;
+                precision = numerador/(j+1); // (j+1) o cut?
+                avgPrecision += precision;
+            }
+        }
+
+        avgPrecision = avgPrecision/relevantDocuments.size();
+        if (topDocs.totalHits.value == 0) querySize--;
+        if (querySize == 0) return new Metrics();
+
+        return new Metrics(numerador/cut, avgPrecision, numerador/relevantDocuments.size(), avgPrecision/querySize);
     }
 
     private static HashMap<Integer, String> parseQueryDoc(Path path) {
