@@ -148,9 +148,9 @@ public class IndexMedline implements AutoCloseable{
             for ( int i = 1 ; i < docsMED.length; i++) {
                 doc = new Document();
                 docMED = docsMED[i];
-                Id_Content = docMED.split("(\r)*\n.W(\r)*\n");
+                Id_Content = docMED.split("(\r)?\n.W(\r)?\n");
                 Id = Id_Content[0];
-                content = Id_Content[1];
+                content = Id_Content[1].toLowerCase().replaceAll("\\(|\\)", "");
                 doc.add(new TextField("contents", content, Field.Store.YES));
                 doc.add(new TextField("DocIDMedline", Id, Field.Store.YES));
 

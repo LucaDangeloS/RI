@@ -319,9 +319,9 @@ public class SearchEvalMedline {
 
             for (int i = 1; i < docsMED.length; i++) {
                 query = docsMED[i];
-                Id_Content = query.split("(\r)*\n.W(\r)*\n");
+                Id_Content = query.split("(\r)?\n.W(\r)?\n");
                 Id = Id_Content[0];
-                content = Id_Content[1];
+                content = Id_Content[1].toLowerCase().replaceAll("\\(|\\)", "");
                 queries.put(Integer.parseInt(Id), content);
             }
         } catch (IOException e) {
