@@ -218,7 +218,7 @@ public class SearchEvalMedline {
             float precision = 0;
             int corteN = 0;
 
-            for (int j = 0; j < cut; j++) {
+            for (int j = 0; j < Math.min(cut, topDocs.scoreDocs.length); j++) {
                 try {
                     corteN = Integer.parseInt(searcher.doc(topDocs.scoreDocs[j].doc).get("DocIDMedline"));
                 } catch (IOException e) {
