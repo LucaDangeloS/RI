@@ -118,9 +118,9 @@ public class TrainingTestMedline {
                             System.exit(1);
                         }
                         searchmodel = SearchModel.TFIDF;
-                        querPar1 = args[++i];
-                        testQuery1 = Integer.valueOf(querPar1.split("-")[0]);
-                        testQuery2 = Integer.valueOf(querPar1.split("-")[1]);
+                        querPar2 = args[++i];
+                        testQuery1 = Integer.valueOf(querPar2.split("-")[0]);
+                        testQuery2 = Integer.valueOf(querPar2.split("-")[1]);
                         break;
                     case "-evaljm":
                         if (searchmodel != null) {
