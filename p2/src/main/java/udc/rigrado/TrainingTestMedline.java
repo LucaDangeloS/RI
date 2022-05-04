@@ -89,7 +89,7 @@ public class TrainingTestMedline {
                         searchmodel = SearchModel.TFIDF;
                         querPar1 = args[++i];
                         testQuery1 = Integer.valueOf(querPar1.split("-")[0]);
-                        testQuery2 = Integer.valueOf(querPar1.split("-")[0]);
+                        testQuery2 = Integer.valueOf(querPar1.split("-")[1]);
                         break;
                     case "-evaljm":
                         if (searchmodel != null) {
@@ -152,6 +152,13 @@ public class TrainingTestMedline {
         outputTestCsvFile = String.format("medline.%s.training.%s.test.%s.%s%d.test",
                 searchmodel.toString().toLowerCase(), querPar1, querPar2, metrica.toString().toLowerCase(), cut) + ".csv";
 
+        if (trainingQuery2 != null) {
+            if ((testQuery2 > mapQueries.size()) || (trainingQuery2 > mapQueries.size())) {
+                System.err.println("query range out of bounds");
+                System.exit(1);
+            }
+        }
+
         switch (searchmodel) {
             case JM:
                 try {
@@ -173,18 +180,36 @@ public class TrainingTestMedline {
         searcher.setSimilarity(similarity);
 
         parser = new QueryParser("contents", new StandardAnalyzer());
-
-        if ((testQuery2 > mapQueries.size()) || (trainingQuery2 > mapQueries.size())) {
-            System.err.println("query range out of bounds");
-            System.exit(1);
-        }
-
+        Metrics results = null;
         int querySize = testQuery2 - testQuery1 + 1;
         ArrayList<String[]> csvMetricValues = new ArrayList<>();
-        String[] csvMetricHeaders = {"Query I", "P@" + cut, "Recall@" + cut, "AP@" + cut};
+        DecimalFormat df = new DecimalFormat("#.#");
+        df.setRoundingMode(RoundingMode.FLOOR);
+
+        String[] csvMetricHeaders = {lambda==0 ? "Query I" : String.valueOf(df.format(lambda)), "P@" + cut, "R@" + cut, "AP@" + cut};
         String[] csvQueryHeaders = new String[querySize + 1];
+        Vector<Float> means = new Vector<>();
+
+        float mean_precision = 0;
+        float mean_recall = 0;
+        float map = 0;
+
         for (int i = testQuery1; i <= testQuery2; i++) {
             csvQueryHeaders[i - testQuery1] = String.valueOf(i);
+            try {
+                query = parser.parse(mapQueries.get(i));
+                results = getMetricsFromQuery(query, searcher, mapRelevance.get(i), cut, querySize );
+                csvMetricValues.add(results.toStringArray());
+            } catch (Exception e) {
+                System.err.println("Exception: " + e);
+                e.printStackTrace();
+            }
+
+            mean_precision += results.precision;
+            mean_recall += results.recall;
+            map += results.AP;
+
+
         }
 
         csvQueryHeaders[csvQueryHeaders.length - 1] = "Promedios";
