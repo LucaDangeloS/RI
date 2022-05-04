@@ -11,6 +11,8 @@ import java.io.Reader;
 import com.opencsv.CSVReader;
 import org.apache.commons.math3.stat.inference.WilcoxonSignedRankTest;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -140,13 +142,14 @@ public class Compare {
         for(int i = 1; i < content2.size()-1; i++) {
             table2[i-1] = Double.parseDouble(content2.get(i)[3]);
         }
-        if(testType == TestType.T){
+
+        if (testType == TestType.T) {
             TTest tTest = new TTest();
             pValue = tTest.pairedTTest(table1, table2);
 
         } else {
             WilcoxonSignedRankTest wilcoxon = new WilcoxonSignedRankTest();
-            pValue = wilcoxon.wilcoxonSignedRank(table1, table2);
+            pValue = wilcoxon.wilcoxonSignedRankTest(table1, table2, false);
         }
 
         System.out.println("pvalue = " + pValue);
