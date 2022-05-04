@@ -199,7 +199,6 @@ public class SearchEvalMedline {
             try {
                 query = parser.parse(mapQueries.get(i));
             } catch (ParseException e) {
-
                 e.printStackTrace();
             }
 
@@ -238,7 +237,7 @@ public class SearchEvalMedline {
             for (int j = 0; j < Math.min(cut, topDocs.totalHits.value); j++) {
                 try {
                     docN = Integer.parseInt(searcher.doc(topDocs.scoreDocs[j].doc).get("DocIDMedline"));
-                    if(relevantDocuments.contains(docN)){
+                    if (relevantDocuments.contains(docN)) {
                         numerador++;
                         precision = numerador/(j+1); // (j+1) o cut?
                         avgPrecision += precision;
@@ -248,7 +247,9 @@ public class SearchEvalMedline {
                     e.printStackTrace();
                 }
             }
+
             if (topDocs.totalHits.value == 0) querySize--;
+            if (querySize == 0) break;
 
             precision = numerador/cut; // Si ya se encuentran todos los relevantes pero el cut es más alto se reduce la precision
             avgPrecision = avgPrecision/relevantDocuments.size(); // No lleva en cuenta documentos irrelevantes después del ultimo relevante

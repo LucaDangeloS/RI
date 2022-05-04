@@ -18,11 +18,14 @@ import org.apache.lucene.store.FSDirectory;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Vector;
 
 public class TrainingTestMedline {
 
@@ -43,7 +46,8 @@ public class TrainingTestMedline {
         Integer cut = null;
         SearchModel searchmodel = null;
         Similarity similarity;
-        String outputCsvFile;
+        String outputTrainCsvFile;
+        String outputTestCsvFile;
         Metrica metrica = null;
         float lambda = 0;
         Integer trainingQuery1 = null;
@@ -73,7 +77,7 @@ public class TrainingTestMedline {
                         try {
                             metrica = Metrica.valueOf(args[++i].toUpperCase());
                         } catch (Exception e) {
-                            System.out.println("-metrica must be P R or MAP");
+                            System.err.println("-metrica must be P R or MAP");
                             System.exit(1);
                         }
                         break;
@@ -143,13 +147,16 @@ public class TrainingTestMedline {
         HashMap<Integer, String> mapQueries = parseQueryDoc(Paths.get(MEDQRY));
         HashMap<Integer, ArrayList<Integer>> mapRelevance = parseRelevanceDoc(Paths.get(MEDREL));
         searcher = new IndexSearcher(reader);
-        outputCsvFile = String.format("medline.%s.training.%s.test.%s.%s%d.test",
+        outputTrainCsvFile = String.format("medline.%s.training.%s.test.%s.%s%d.training",
                searchmodel.toString().toLowerCase(), querPar1, querPar2, metrica.toString().toLowerCase(), cut) + ".csv";
+        outputTestCsvFile = String.format("medline.%s.training.%s.test.%s.%s%d.test",
+                searchmodel.toString().toLowerCase(), querPar1, querPar2, metrica.toString().toLowerCase(), cut) + ".csv";
 
         switch (searchmodel) {
             case JM:
                 try {
-                    lambda = trainLambda(searcher, trainingQuery1, trainingQuery2, mapQueries, mapRelevance, cut, metrica);
+                    lambda = trainLambda(searcher, trainingQuery1, trainingQuery2, mapQueries,
+                            mapRelevance, cut, metrica, outputTrainCsvFile);
                 } catch (IOException e) {
                     e.printStackTrace();
                     System.exit(1);
@@ -199,113 +206,128 @@ public class TrainingTestMedline {
 
             if (topDocs == null) break;
 
-            for (int j = 0; j <  topDocs.totalHits.value ; j++) {
-                try {
-                    String docOutput = searcher.doc(topDocs.scoreDocs[j].doc).get("DocIDMedline") + "\t -- score: " + topDocs.scoreDocs[j].score;
-                    fileOutput.append(docOutput + "\n");
-                    System.out.println(docOutput);
-                } catch (CorruptIndexException e) {
-                    System.out.println("Corrupt Index " + e);
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    System.out.println("Exception " + e);
-                    e.printStackTrace();
-                }
-
-            }
-
             ArrayList<Integer> relevantDocuments = mapRelevance.get(i);
-            float avgPrecision = 0;
-            float numerador = 0;
-            float precision;
-            int docN;
-
-            for (int j = 0; j < Math.min(cut, topDocs.totalHits.value); j++) {
-                try {
-                    docN = Integer.parseInt(searcher.doc(topDocs.scoreDocs[j].doc).get("DocIDMedline"));
-                    if(relevantDocuments.contains(docN)){
-                        numerador++;
-                        precision = numerador/(j+1); // (j+1) o cut?
-                        avgPrecision += precision;
-                    }
-                } catch (IOException e) {
-                    System.err.println("Exception: " + e);
-                    e.printStackTrace();
-                }
-            }
-            if (topDocs.totalHits.value == 0) querySize--;
-
-            precision = numerador/cut; // Si ya se encuentran todos los relevantes pero el cut es más alto se reduce la precision
-            avgPrecision = avgPrecision/relevantDocuments.size(); // No lleva en cuenta documentos irrelevantes después del ultimo relevante
-            map += avgPrecision;
-            float recall = numerador/relevantDocuments.size();
-
-            mean_precision += precision;
-            mean_recall += recall;
-
-            csvMetricValues.add(new String[]{String.valueOf(precision), String.valueOf(recall), String.valueOf(avgPrecision)});
-
-//            String outStr = String.format("P@%d = %.4f  Recall@%d = %.4f AP@%d = %.4f",
-//                    cut, precision, cut, recall, cut, avgPrecision);
-//            System.out.println(outStr);
 
         }
-        map = map/(querySize);
-        mean_precision = mean_precision/(querySize);
-        mean_recall = mean_recall/(querySize);
-
-        csvMetricValues.add(new String[]{String.valueOf(mean_precision/querySize), String.valueOf(mean_recall/querySize), String.valueOf(map/querySize)});
-        createCsv(csvMetricHeaders, csvQueryHeaders, csvMetricValues, outputCsvFile);
-
     }
 
     private static float trainLambda(IndexSearcher searcher, Integer trainingQuery1,
                                      Integer trainingQuery2, HashMap<Integer, String> mapQueries,
                                      HashMap<Integer, ArrayList<Integer>> mapRelevance, Integer cut,
-                                     Metrica metrica) throws IOException
+                                     Metrica metrica, String csvFileOutput) throws IOException
     {
         ArrayList<String[]> csvMetricValues = new ArrayList<>();
-        ArrayList<Integer> relevantDocuments = new ArrayList<>();
-        float numerador = 0;
-        float maxMetric = 0;
-        int corteN = 0;
-        float lambda;
+        ArrayList<String> csvQueriesCol = new ArrayList<>();
+        ArrayList<String> csvHeaders = new ArrayList<>();
 
-        for (lambda = 0; lambda <= 1; lambda += 0.1) {
-            Similarity similarity = new LMJelinekMercerSimilarity(lambda);
-            searcher.setSimilarity(similarity);
-            TopDocs topDocs = null;
+        ArrayList<Float> results = new ArrayList<>();
+        ArrayList<Integer> relevantDocuments;
+        csvHeaders.add(metrica.toString() + "@" + cut);
 
-            QueryParser parser = new QueryParser("contents",new StandardAnalyzer());
+        Vector<Float> means = new Vector<>();
+        float lambdaJumps = 0.1f;
+        int querySize = 1;
+        float bestLambda = 0;
 
-            for (int i = trainingQuery1; i <= trainingQuery2; i++) {
-                relevantDocuments = mapRelevance.get(i);
+        for (int i = trainingQuery1; i <= trainingQuery2; i++) {
+
+            querySize = i - trainingQuery1 + 1;
+            float lambda;
+            int docN;
+
+            relevantDocuments = mapRelevance.get(i);
+
+            for (lambda = 0.1f; lambda <= 1; lambda = Math.round((lambda + lambdaJumps)*100)/100f) {
+                float avgPrecision = 0;
+                float numerador = 0;
+                float precision;
+                float metricValue = 0;
+
+                Similarity similarity = new LMJelinekMercerSimilarity(lambda);
+                searcher.setSimilarity(similarity);
+                TopDocs topDocs;
+
+                QueryParser parser = new QueryParser("contents",new StandardAnalyzer());
+            
                 try {
                     Query query = parser.parse(mapQueries.get(i));
                     topDocs = searcher.search(query, cut);
+                    if (topDocs == null) break;
+    
+                    for (int j = 0; j < Math.min(cut, topDocs.scoreDocs.length); j++) {
+                        docN = Integer.parseInt(searcher.doc(topDocs.scoreDocs[j].doc).get("DocIDMedline"));
+    
+                        if(relevantDocuments.contains(docN)) {
+                            numerador++;
+                            precision = numerador/(j+1); // (j+1) o cut?
+                            avgPrecision += precision;
+                        }
+                    }
+
+                    if (topDocs.totalHits.value == 0) querySize--;
+                    if (querySize == 0) break;
+
+                    switch (metrica) {
+                        case MAP:
+                            avgPrecision = avgPrecision/relevantDocuments.size();
+                            metricValue = avgPrecision/querySize;
+                        case P:
+                            precision = numerador/cut;
+                            metricValue = precision;
+                        case R:
+                            metricValue = numerador/relevantDocuments.size();
+                    }
                 } catch (Exception e) {
                     System.err.println("Exception: " + e);
                     e.printStackTrace();
                 }
 
-            }
-
-            for (int j = 0; j < Math.min(cut, topDocs.scoreDocs.length); j++) {
-                try {
-                    corteN = Integer.parseInt(searcher.doc(topDocs.scoreDocs[j].doc).get("DocIDMedline"));
-                } catch (IOException e) {
-                    System.out.println("Exception " + e);
-                    e.printStackTrace();
-                }
-                if(relevantDocuments.contains(corteN)) {
-                    numerador++;
-
-
+                results.add(metricValue);
+                
+                // Solo para una iteracion
+                if (i - trainingQuery1 == 0) {
+                    csvHeaders.add(String.format("%.2f", lambda));
                 }
             }
-
+            // Va sumando los resultados de cada lambda
+            if (i - trainingQuery1 != 0) {
+                for (int j = 0; j < results.size(); j++) {
+                    means.set(j, means.get(j) + results.get(j));
+                }
+            } else {
+                means.addAll(results);
+            }
+            // los pasa a un String[] para añadir al csv
+            csvMetricValues.add(Arrays.stream(results.toArray(new Float[0])).map(String::valueOf).toArray(String[]::new));
+            results.clear();
+            csvQueriesCol.add("Q" + i);
         }
-        return lambda;
+
+        int finalQuerySize = querySize;
+        means.forEach(value -> value = value/ finalQuerySize);
+
+        csvQueriesCol.add("Promedios");
+        csvMetricValues.add(Arrays.stream(means.toArray(new Float[0])).map(String::valueOf).toArray(String[]::new));
+        // ArrayList<String> to String[]
+        createCsv(csvHeaders.toArray(new String[0]), csvQueriesCol.toArray(new String[0]), csvMetricValues, csvFileOutput);
+
+        bestLambda = getIndexFromMax(means) * lambdaJumps + lambdaJumps;
+
+        return bestLambda;
+    }
+
+//    private static
+
+    private static int getIndexFromMax(Vector<Float> array) {
+        int index = 0;
+        float max = array.get(0);
+        for (int i = 1; i < array.size(); i++) {
+            if (array.get(i) > max) {
+                max = array.get(i);
+                index = i;
+            }
+        }
+        return index;
     }
 
     private static HashMap<Integer, String> parseQueryDoc(Path path) {
