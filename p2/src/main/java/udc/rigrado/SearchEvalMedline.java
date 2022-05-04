@@ -27,6 +27,9 @@ import java.util.HashMap;
 import java.util.Objects;
 
 public class SearchEvalMedline {
+    private static String MEDQRY = "./DocMed/MED.QRY";
+    private static String MEDREL = "./DocMed/MED.REL";
+
     public static void main(String[] args) {
         String usage = "java SearchEvalMedline"
                 + " [-indexin INDEX_PATH] [-search jm lambda | tfidf] [-cut n] [-top m] [-queries all | int1 | int1-int2] " + "\n\n"
@@ -102,7 +105,7 @@ public class SearchEvalMedline {
         }
 
         if(cut == null || cut < 1){
-            System.err.println("-top must be a non negative number");
+            System.err.println("-cut must be a non negative number");
             System.exit(1);
         }
 
@@ -111,7 +114,7 @@ public class SearchEvalMedline {
             reader = DirectoryReader.open(dir);
 
         } catch (IOException e1) {
-            System.out.println("Graceful message: exception " + e1);
+            System.err.println("Exception: " + e1);
             e1.printStackTrace();
         }
 
@@ -147,8 +150,8 @@ public class SearchEvalMedline {
         parser = new QueryParser("contents", new StandardAnalyzer());
 
 
-        HashMap<Integer, String> mapQueries = parseQueryDoc(Paths.get("./DocMed/MED.QRY"));
-        HashMap<Integer, ArrayList<Integer>> mapRelevance = parseRelevanceDoc(Paths.get("./DocMed/MED.REL"));
+        HashMap<Integer, String> mapQueries = parseQueryDoc(Paths.get(MEDQRY));
+        HashMap<Integer, ArrayList<Integer>> mapRelevance = parseRelevanceDoc(Paths.get(MEDREL));
 
         if (Objects.equals(querPar.toUpperCase(), "ALL")){
             query2 = mapQueries.size();
@@ -173,7 +176,7 @@ public class SearchEvalMedline {
 
         csvQueryHeaders[csvQueryHeaders.length - 1] = "Promedios";
         StringBuilder fileOutput = new StringBuilder();
-        float mean_precition = 0;
+        float mean_precision = 0;
         float mean_recall = 0;
         float map = 0;
 
@@ -190,7 +193,7 @@ public class SearchEvalMedline {
             try {
                 topDocs = searcher.search(query, Math.max(top, cut));
             } catch (IOException e1) {
-                System.out.println("Graceful message: exception " + e1);
+                System.err.println("Exception: " + e1);
                 e1.printStackTrace();
             }
             String queryOutput = "\n" + "Results for query: \"" + mapQueries.get(i).trim() + "\" showing for the first " + top + " documents.";
@@ -203,10 +206,10 @@ public class SearchEvalMedline {
                     fileOutput.append(docOutput + "\n");
                     System.out.println(docOutput);
                 } catch (CorruptIndexException e) {
-                    System.out.println("Corrupt Index " + e);
+                    System.err.println("Corrupt Index " + e);
                     e.printStackTrace();
                 } catch (IOException e) {
-                    System.out.println("Exception " + e);
+                    System.err.println("Exception: " + e);
                     e.printStackTrace();
                 }
 
@@ -222,7 +225,7 @@ public class SearchEvalMedline {
                 try {
                     corteN = Integer.parseInt(searcher.doc(topDocs.scoreDocs[j].doc).get("DocIDMedline"));
                 } catch (IOException e) {
-                    System.out.println("Exception " + e);
+                    System.err.println("Exception: " + e);
                     e.printStackTrace();
                 }
                 if(relevantDocuments.contains(corteN)){
@@ -237,7 +240,7 @@ public class SearchEvalMedline {
             map += avgPrecision;
             float recall = numerador/relevantDocuments.size();
 
-            mean_precition += precision;
+            mean_precision += precision;
             mean_recall += recall;
 
             csvMetricValues.add(new String[]{String.valueOf(precision), String.valueOf(recall), String.valueOf(avgPrecision)});
@@ -250,7 +253,7 @@ public class SearchEvalMedline {
         }
         map = map/(querySize);
 
-        csvMetricValues.add(new String[]{String.valueOf(mean_precition/querySize), String.valueOf(mean_recall/querySize), String.valueOf(map/querySize)});
+        csvMetricValues.add(new String[]{String.valueOf(mean_precision/querySize), String.valueOf(mean_recall/querySize), String.valueOf(map/querySize)});
         createCsv(csvMetricHeaders, csvQueryHeaders, csvMetricValues, outputCsvFile);
         String mapOutput = String.format("\n\nMAP = %.4f", map);
         fileOutput.append(mapOutput + "\n");
