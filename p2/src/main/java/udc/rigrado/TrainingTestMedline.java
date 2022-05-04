@@ -1,12 +1,10 @@
 package udc.rigrado;
 
 import com.opencsv.CSVWriter;
-import org.apache.commons.collections4.queue.TransformedQueue;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
@@ -25,13 +23,17 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Objects;
 
 public class TrainingTestMedline {
 
-    private enum Metrica {P, R, MAP};
-    private static String MEDQRY = "./DocMed/MED.QRY";
-    private static String MEDREL = "./DocMed/MED.REL";
+    private enum Metrica {P, R, MAP}
+    private final static String MEDQRY = "./DocMed/MED.QRY";
+    private final static String MEDREL = "./DocMed/MED.REL";
+
+    private enum SearchModel {
+        JM,
+        TFIDF
+    }
 
     public static void main(String[] args) {
         String usage = "java TrainingTestMedline"
@@ -39,7 +41,7 @@ public class TrainingTestMedline {
 
         String indexPath = "./index";
         Integer cut = null;
-        String searchmodel = null;
+        SearchModel searchmodel = null;
         Similarity similarity;
         String outputCsvFile;
         Metrica metrica = null;
@@ -53,7 +55,7 @@ public class TrainingTestMedline {
         Directory dir;
         IndexSearcher searcher;
         QueryParser parser;
-        Query query = null;
+        Query query;
         String querPar1 = null;
         String querPar2 = null;
 
@@ -80,7 +82,7 @@ public class TrainingTestMedline {
                             System.err.println("Only one search model can be used");
                             System.exit(1);
                         }
-                        searchmodel = "TFIDF";
+                        searchmodel = SearchModel.TFIDF;
                         querPar1 = args[++i];
                         testQuery1 = Integer.valueOf(querPar1.split("-")[0]);
                         testQuery2 = Integer.valueOf(querPar1.split("-")[0]);
@@ -90,7 +92,7 @@ public class TrainingTestMedline {
                             System.err.println("Only one search model can be used");
                             System.exit(1);
                         }
-                        searchmodel = "JM";
+                        searchmodel = SearchModel.JM;
                         querPar1 = args[++i];
                         querPar2 = args[++i];
                         String[] args1 = querPar1.split("-");
@@ -110,23 +112,27 @@ public class TrainingTestMedline {
             System.exit(1);
         }
 
-        if(cut == null || cut < 1){
-            System.err.println("-cut must be a non negative number");
+        if (searchmodel == null || metrica == null || indexPath == null || cut == null) {
+            System.err.println("Usage: " + usage);
             System.exit(1);
         }
 
-        if (metrica == null) {
-            System.err.println("-metrica must be P R or MAP");
+        if(cut < 1){
+            System.err.println("-cut must be a non negative number");
             System.exit(1);
         }
 
         try {
             dir = FSDirectory.open(Paths.get(indexPath));
             reader = DirectoryReader.open(dir);
-
         } catch (IOException e1) {
             System.err.println("Exception: " + e1);
             e1.printStackTrace();
+        }
+
+        if (reader == null) {
+            System.err.println("Index not found");
+            System.exit(1);
         }
 
         if(cut > reader.numDocs()){
@@ -138,10 +144,10 @@ public class TrainingTestMedline {
         HashMap<Integer, ArrayList<Integer>> mapRelevance = parseRelevanceDoc(Paths.get(MEDREL));
         searcher = new IndexSearcher(reader);
         outputCsvFile = String.format("medline.%s.training.%s.test.%s.%s%d.test",
-               searchmodel.toLowerCase(), querPar1, querPar2, metrica.toString().toLowerCase(), cut) + ".csv";
+               searchmodel.toString().toLowerCase(), querPar1, querPar2, metrica.toString().toLowerCase(), cut) + ".csv";
 
         switch (searchmodel) {
-            case "JM":
+            case JM:
                 try {
                     lambda = trainLambda(searcher, trainingQuery1, trainingQuery2, mapQueries, mapRelevance, cut, metrica);
                 } catch (IOException e) {
@@ -150,7 +156,7 @@ public class TrainingTestMedline {
                 }
                 similarity = new LMJelinekMercerSimilarity(lambda);
                 break;
-            case "TFIDF":
+            case TFIDF:
                 similarity = new ClassicSimilarity();
                 break;
             default:
@@ -191,6 +197,8 @@ public class TrainingTestMedline {
                 e.printStackTrace();
             }
 
+            if (topDocs == null) break;
+
             for (int j = 0; j <  topDocs.totalHits.value ; j++) {
                 try {
                     String docOutput = searcher.doc(topDocs.scoreDocs[j].doc).get("DocIDMedline") + "\t -- score: " + topDocs.scoreDocs[j].score;
@@ -209,8 +217,8 @@ public class TrainingTestMedline {
             ArrayList<Integer> relevantDocuments = mapRelevance.get(i);
             float avgPrecision = 0;
             float numerador = 0;
-            float precision = 0;
-            int docN = 0;
+            float precision;
+            int docN;
 
             for (int j = 0; j < Math.min(cut, topDocs.totalHits.value); j++) {
                 try {

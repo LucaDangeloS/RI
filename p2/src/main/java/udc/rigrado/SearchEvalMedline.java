@@ -27,8 +27,13 @@ import java.util.HashMap;
 import java.util.Objects;
 
 public class SearchEvalMedline {
-    private static String MEDQRY = "./DocMed/MED.QRY";
-    private static String MEDREL = "./DocMed/MED.REL";
+    private final static String MEDQRY = "./DocMed/MED.QRY";
+    private final static String MEDREL = "./DocMed/MED.REL";
+
+    private enum SearchModel {
+        JM,
+        TFIDF
+    }
 
     public static void main(String[] args) {
         String usage = "java SearchEvalMedline"
@@ -38,7 +43,7 @@ public class SearchEvalMedline {
         String indexPath = "./index";
         Integer cut = null;
         Integer top = null;
-        String searchmodel = null;
+        SearchModel searchmodel = null;
         Similarity similarity;
         String outputCsvFile;
         String outputTxtFile;
@@ -60,9 +65,14 @@ public class SearchEvalMedline {
                         indexPath = args[++i];
                         break;
                     case "-search":
-                        searchmodel = args[++i];
-                        if(Objects.equals(searchmodel.toUpperCase(), "JM")){
-                            lambda = Float.parseFloat(args[++i]);
+                        try {
+                            searchmodel = SearchModel.valueOf(args[++i].toUpperCase());
+                            if (searchmodel == SearchModel.JM) {
+                                lambda = Float.parseFloat(args[++i]);
+                            }
+                        } catch (Exception e) {
+                            System.err.println("-search must be jm lambda or tfidf");
+                            System.exit(1);
                         }
                         break;
                     case "-cut":
@@ -94,17 +104,17 @@ public class SearchEvalMedline {
             System.exit(1);
         }
 
-        if (searchmodel == null || !(Objects.equals(searchmodel.toUpperCase(), "JM") || Objects.equals(searchmodel.toUpperCase(), "TFIDF"))) {
-            System.err.println("-search must be jm lambda or tfidf");
+        if (searchmodel == null || top == null || cut == null || indexPath == null || querPar == null) {
+            System.err.println("Usage: " + usage);
             System.exit(1);
         }
 
-        if(top == null || top < 1){
+        if(top < 1){
             System.err.println("-top must be a non negative number");
             System.exit(1);
         }
 
-        if(cut == null || cut < 1){
+        if(cut < 1){
             System.err.println("-cut must be a non negative number");
             System.exit(1);
         }
@@ -113,9 +123,14 @@ public class SearchEvalMedline {
             dir = FSDirectory.open(Paths.get(indexPath));
             reader = DirectoryReader.open(dir);
 
-        } catch (IOException e1) {
-            System.err.println("Exception: " + e1);
-            e1.printStackTrace();
+        } catch (IOException e) {
+            System.err.println("Exception: " + e);
+            e.printStackTrace();
+        }
+
+        if (reader == null) {
+            System.err.println("Index not found");
+            System.exit(1);
         }
 
         if(top > reader.numDocs() ){
@@ -128,14 +143,14 @@ public class SearchEvalMedline {
             System.exit(1);
         }
 
-        switch (searchmodel.toUpperCase()){
-            case "JM":
+        switch (searchmodel){
+            case JM:
                 similarity = new LMJelinekMercerSimilarity(lambda);
                 String strlambda = Float.toString(lambda);
-                outputCsvFile = String.format("medline.jm.%d.cut.lambda.%s.q", cut, strlambda) + querPar + ".csv";
-                outputTxtFile = String.format("medline.jm.%d.hits.lambda.%s.q", top, strlambda) + querPar + ".txt";
+                outputCsvFile = String.format("medline.jm.%d.cut.lambda.%s.q%s.csv", cut, strlambda, querPar);
+                outputTxtFile = String.format("medline.jm.%d.hits.lambda.%s.q%s.txt", top, strlambda, querPar);
                 break;
-            case "TFIDF":
+            case TFIDF:
                 similarity = new ClassicSimilarity();
                 outputCsvFile = "medline.tfidf." + cut + ".cut.q" + querPar + ".csv";
                 outputTxtFile = "medline.tfidf." + top + ".hits.q" + querPar + ".txt";
@@ -149,7 +164,6 @@ public class SearchEvalMedline {
 
         parser = new QueryParser("contents", new StandardAnalyzer());
 
-
         HashMap<Integer, String> mapQueries = parseQueryDoc(Paths.get(MEDQRY));
         HashMap<Integer, ArrayList<Integer>> mapRelevance = parseRelevanceDoc(Paths.get(MEDREL));
 
@@ -162,7 +176,7 @@ public class SearchEvalMedline {
         }
 
         if (query2 > mapQueries.size()){
-            System.err.println("query range out of bounds");
+            System.err.println("Query range out of bounds");
             System.exit(1);
         }
 
@@ -218,8 +232,8 @@ public class SearchEvalMedline {
             ArrayList<Integer> relevantDocuments = mapRelevance.get(i);
             float avgPrecision = 0;
             float numerador = 0;
-            float precision = 0;
-            int docN = 0;
+            float precision;
+            int docN;
 
             for (int j = 0; j < Math.min(cut, topDocs.totalHits.value); j++) {
                 try {
