@@ -7,10 +7,10 @@ import org.apache.commons.math3.stat.inference.TTest;
 import java.io.FileReader;
 import java.io.IOException;
 import org.apache.commons.math3.stat.inference.WilcoxonSignedRankTest;
+import org.apache.commons.math3.stat.ranking.NaNStrategy;
+import org.apache.commons.math3.stat.ranking.TiesStrategy;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.OptionalDouble;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -87,16 +87,18 @@ public class Compare {
             System.err.println("Usage: " + usage);
             System.exit(1);
         }
+        if(results1 == null || results2 == null){
+            System.err.println("Usage:" + usage);
+            System.exit(1);
+        }
+
         if(alph <= 0f){
             System.err.println("alfa must be a non negative number");
             System.exit(1);
         }
-        assert results1 != null;
-        assert results2 != null;
 
         if (validateCsv(results1, results2)){
-            System.out.println("CSV correctos");
-
+            System.out.println("Valid CSVs");
         }
 
         CSVReader reader1 = null;
@@ -121,9 +123,7 @@ public class Compare {
             content2 = reader2.readAll();
             sizeTable1 = content1.size() - 2;
             sizeTable2 = content2.size() - 2;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (CsvException e) {
+        } catch (IOException | CsvException e) {
             throw new RuntimeException(e);
         }
         if(sizeTable1 != sizeTable2){
@@ -134,11 +134,13 @@ public class Compare {
         double[] table1 = new double[sizeTable1];
         double[] table2 = new double[sizeTable2];
         double pValue = 0;
+        Boolean testResult = false;
 
-        Metrica metric = Metrica.valueOf(new CsvProperties(results1).metric);
+        Metrica metric = Metrica.valueOf(new CsvProperties(results1).metric.toUpperCase());
         int metricCol = 0;
         switch (metric.toString()){
             case "MAP":
+            case "AP":
                 metricCol = 3;
                 break;
             case "P":
@@ -146,10 +148,6 @@ public class Compare {
                 break;
             case "R":
                 metricCol = 2;
-                break;
-
-            case "AP":
-                metricCol = 3;
                 break;
 
             default:
@@ -163,32 +161,50 @@ public class Compare {
             table2[i-1] = Double.parseDouble(content2.get(i)[metricCol]);
         }
         if (metric == Metrica.MAP){
-            double double1 = Arrays.stream(table1).average().getAsDouble();
-            double double2 = Arrays.stream(table2).average().getAsDouble();
+
+            double[] double1 = new double[table1.length];
+            double[] double2 = new double[table2.length];
+
+            for (int i = 0; i < table1.length; i++) {
+                double sum1 = 0;
+                double sum2 = 0;
+                sum1 += table1[i];
+                double1[i] = sum1/(i+1);
+                sum2 += table2[i];
+                double2[i] = sum2/(i+1);
+
+            }
+
             if (testType == TestType.T) {
                 TTest tTest = new TTest();
-//                pValue = tTest.tTest(double1, double2);
+                pValue = tTest.tTest(double1, double2);
+                testResult = tTest.pairedTTest(double1, double2, alph);
+
             } else {
-                WilcoxonSignedRankTest wilcoxon = new WilcoxonSignedRankTest();
-//                pValue = wilcoxon.wilcoxonSignedRankTest(double1, double2, false);
+                WilcoxonSignedRankTest wilcoxon = new WilcoxonSignedRankTest(NaNStrategy.FIXED, TiesStrategy.AVERAGE);
+                pValue = wilcoxon.wilcoxonSignedRankTest(double1, double2, false);
+
             }
 
         }else{
             if (testType == TestType.T) {
                 TTest tTest = new TTest();
                 pValue = tTest.pairedTTest(table1, table2);
+                testResult = tTest.pairedTTest(table1, table2, alph);
 
             } else {
-                WilcoxonSignedRankTest wilcoxon = new WilcoxonSignedRankTest();
+                WilcoxonSignedRankTest wilcoxon = new WilcoxonSignedRankTest(NaNStrategy.FIXED,TiesStrategy.AVERAGE);
                 pValue = wilcoxon.wilcoxonSignedRankTest(table1, table2, false);
+
             }
         }
 
-        System.out.println("pvalue = " + pValue);
-
+        System.out.println("Result from " + testType.toString().toLowerCase() + " test:");
+        String sout = testType.equals(TestType.T) ? testResult + "\t|\t" : "";
+        sout +=  "pvalue = " + pValue;
+        System.out.println(sout);
 
     }
-
 
     public static boolean validateCsv(String result1, String result2 ) {
         CsvProperties csv1 = new CsvProperties(result1);
