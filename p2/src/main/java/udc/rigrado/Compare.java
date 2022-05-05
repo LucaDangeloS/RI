@@ -2,23 +2,20 @@ package udc.rigrado;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
-import com.opencsv.exceptions.CsvValidationException;
 import org.apache.commons.math3.stat.inference.TTest;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
-import com.opencsv.CSVReader;
 import org.apache.commons.math3.stat.inference.WilcoxonSignedRankTest;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
+import java.util.OptionalDouble;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Compare {
-
+    private enum Metrica {P, R, MAP}
     private enum TestType{T, WILCOXON}
 
     // Csv properties class data type
@@ -65,7 +62,6 @@ public class Compare {
         String results1 = null;
         String results2 = null;
 
-        String tesTypeStr;
         TestType testType = null;
         Float alph = 0f;
         try {
@@ -111,7 +107,7 @@ public class Compare {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        String[] lineInArray;
+
         if(reader1 == null || reader2 == null ){
             System.err.println("There is a csv file missing");
             System.exit(1);
@@ -130,26 +126,62 @@ public class Compare {
         } catch (CsvException e) {
             throw new RuntimeException(e);
         }
-
+        if(sizeTable1 != sizeTable2){
+            System.err.println("Csv file size does not match");
+            System.exit(1);
+        }
 
         double[] table1 = new double[sizeTable1];
         double[] table2 = new double[sizeTable2];
         double pValue = 0;
 
+        Metrica metric = Metrica.valueOf(new CsvProperties(results1).metric);
+        int metricCol = 0;
+        switch (metric.toString()){
+            case "MAP":
+                metricCol = 3;
+                break;
+            case "P":
+                metricCol = 1;
+                break;
+            case "R":
+                metricCol = 2;
+                break;
+
+            case "AP":
+                metricCol = 3;
+                break;
+
+            default:
+                break;
+        }
+
         for(int i = 1; i < content1.size()-1; i++) {
-            table1[i-1] = Double.parseDouble(content1.get(i)[3]);
+            table1[i-1] = Double.parseDouble(content1.get(i)[metricCol]);
         }
         for(int i = 1; i < content2.size()-1; i++) {
-            table2[i-1] = Double.parseDouble(content2.get(i)[3]);
+            table2[i-1] = Double.parseDouble(content2.get(i)[metricCol]);
         }
+        if (metric == Metrica.MAP){
+            double double1 = Arrays.stream(table1).average().getAsDouble();
+            double double2 = Arrays.stream(table2).average().getAsDouble();
+            if (testType == TestType.T) {
+                TTest tTest = new TTest();
+//                pValue = tTest.tTest(double1, double2);
+            } else {
+                WilcoxonSignedRankTest wilcoxon = new WilcoxonSignedRankTest();
+//                pValue = wilcoxon.wilcoxonSignedRankTest(double1, double2, false);
+            }
 
-        if (testType == TestType.T) {
-            TTest tTest = new TTest();
-            pValue = tTest.pairedTTest(table1, table2);
+        }else{
+            if (testType == TestType.T) {
+                TTest tTest = new TTest();
+                pValue = tTest.pairedTTest(table1, table2);
 
-        } else {
-            WilcoxonSignedRankTest wilcoxon = new WilcoxonSignedRankTest();
-            pValue = wilcoxon.wilcoxonSignedRankTest(table1, table2, false);
+            } else {
+                WilcoxonSignedRankTest wilcoxon = new WilcoxonSignedRankTest();
+                pValue = wilcoxon.wilcoxonSignedRankTest(table1, table2, false);
+            }
         }
 
         System.out.println("pvalue = " + pValue);
