@@ -26,10 +26,12 @@ import java.util.*;
 
 public class TrainingTestMedline {
 
-    private enum Metrica {P, R, MAP}
+//    Las clases TrainingTestMedline y SearchEvalMedline usan constantes globales para definir donde acceder a los
+//    ficheros de queries y juicios de relevancia, estas constantes se pueden cambiar a gusto del usuario:
+
     private final static String MEDQRY = "./DocMed/MED.QRY";
     private final static String MEDREL = "./DocMed/MED.REL";
-
+    private enum Metrica {P, R, MAP}
     private enum SearchModel {
         JM,
         TFIDF
