@@ -183,6 +183,7 @@ public class Compare {
             } else {
                 WilcoxonSignedRankTest wilcoxon = new WilcoxonSignedRankTest(NaNStrategy.FIXED, TiesStrategy.AVERAGE);
                 pValue = wilcoxon.wilcoxonSignedRankTest(double1, double2, false);
+                testResult = pValue < alph;
 
             }
 
@@ -195,13 +196,15 @@ public class Compare {
             } else {
                 WilcoxonSignedRankTest wilcoxon = new WilcoxonSignedRankTest(NaNStrategy.FIXED,TiesStrategy.AVERAGE);
                 pValue = wilcoxon.wilcoxonSignedRankTest(table1, table2, false);
+                testResult = pValue < alph;
 
             }
         }
 
-        System.out.println("Result from " + testType.toString().toLowerCase() + " test:");
-        String sout = testType.equals(TestType.T) ? testResult + "\t|\t" : "";
-        sout +=  "pvalue = " + pValue;
+        System.out.println("Result from " + testType.toString().toLowerCase() + " test with alpha = " + alph  + ":");
+        String sout = testResult ? "Null hypothesis rejected" : "Null hypothesis accepted";
+
+        sout +=  "\t| pvalue = " + pValue;
         System.out.println(sout);
 
     }
