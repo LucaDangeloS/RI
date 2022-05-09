@@ -109,7 +109,7 @@ public class SearchEvalMedline {
                             query1 = Integer.parseInt(rang[0]);
                             query2 = Integer.parseInt(rang[1]);
                         } else if (Objects.equals(querPar.toUpperCase(), "ALL")) {
-                            query1 = 0;
+                            query1 = 1;
                         } else {
                             query1 = Integer.parseInt(querPar);
                         }
