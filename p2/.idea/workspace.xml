@@ -5,14 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d903e6e7-6ecf-4d87-bba9-412732efc798" name="Changes" comment="Quitado trimming en indexfiles">
-      <change afterPath="$PROJECT_DIR$/.attach_pid47166" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.attach_pid91153" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.attach_pid92053" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.attach_pid1797736" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.attach_pid1826243" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.attach_pid1835046" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MED.QRY" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MED.REL" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/medline.jm.5.cut.lambda.0.5.q1-3.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/medline.jm.5.hits.lambda.0.5.q1-3.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/udc/rigrado/SearchEvalMedline.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/udc/rigrado/SearchEvalMedline.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DocMed/MED.QRY" beforeDir="false" afterPath="$PROJECT_DIR$/DocMed/MED.QRY" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DocMed/MED.REL" beforeDir="false" afterPath="$PROJECT_DIR$/DocMed/MED.REL" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,6 +47,7 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
     &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/luca/UDC/RI/repo/p2/DocMed&quot;,
     &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.20775624&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.26573426&quot;,
@@ -55,7 +56,22 @@
     &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;
   }
 }</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/DocMed" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
+  </component>
   <component name="RunManager" selected="Application.SearchEval">
+    <configuration name="Compare" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="udc.rigrado.Compare" />
+      <module name="p2" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="IndexMedline" type="Application" factoryName="Application" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="udc.rigrado.IndexMedline" />
       <module name="p2" />
@@ -73,21 +89,15 @@
     <configuration name="SearchEval" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="udc.rigrado.SearchEvalMedline" />
       <module name="p2" />
-      <option name="PROGRAM_PARAMETERS" value="-indexin ./index -search tfidf -cut 1033 -top 25 -queries all" />
+      <option name="PROGRAM_PARAMETERS" value="-indexin ./index -search jm 0.5 -cut 1033 -top 10 -queries 6-8" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="SearchEvalMedline" type="Application" factoryName="Application">
-      <option name="MAIN_CLASS_NAME" value="udc.rigrado.SearchEvalMedline" />
+    <configuration name="TrainingTest" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="udc.rigrado.TrainingTestMedline" />
       <module name="p2" />
-      <option name="PROGRAM_PARAMETERS" value="-indexin ./index -search jm 0.5 -cut 5 -top 10 -queries 1-30" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="udc.rigrado.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
+      <option name="PROGRAM_PARAMETERS" value="-indexin ./index -evaljm 6-6 12-12 -metrica map -cut 1033" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -95,7 +105,8 @@
     <list>
       <item itemvalue="Application.IndexMedline" />
       <item itemvalue="Application.SearchEval" />
-      <item itemvalue="Application.SearchEvalMedline" />
+      <item itemvalue="Application.Compare" />
+      <item itemvalue="Application.TrainingTest" />
     </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -113,6 +124,8 @@
       <workItem from="1651748929323" duration="1484000" />
       <workItem from="1652092420016" duration="885000" />
       <workItem from="1652093337688" duration="274000" />
+      <workItem from="1652256830124" duration="1161000" />
+      <workItem from="1655650599122" duration="31000" />
     </task>
     <task id="LOCAL-00001" summary="Empezado el IndexMedline">
       <created>1651402500621</created>
